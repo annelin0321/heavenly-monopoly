@@ -4,50 +4,120 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>天國大富翁：應許之地</title>
+    
+    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'adventure-bg': '#E6D5B8', 'adventure-paper': '#F3E5AB', 'adventure-ink': '#3E2723',
-              'adventure-gold': '#B8860B', 'adventure-red': '#8B0000', 'adventure-sea': '#87A8B3',
+              'adventure-bg': '#E6D5B8', 
+              'adventure-paper': '#F3E5AB',
+              'adventure-ink': '#3E2723',
+              'adventure-gold': '#B8860B', 
+              'adventure-red': '#8B0000',
+              'adventure-sea': '#87A8B3',
             },
-            fontFamily: { 'rounded': ['"Zen Maru Gothic"', 'sans-serif'], 'serif': ['"Times New Roman"', 'serif'] },
-            boxShadow: { 'paper': '2px 3px 5px rgba(62, 39, 35, 0.3)', 'deck': '2px 2px 0 #3E2723, 4px 4px 0 #3E2723, 6px 6px 10px rgba(0,0,0,0.3)' }
+            fontFamily: {
+              'rounded': ['"Zen Maru Gothic"', 'sans-serif'],
+              'serif': ['"Times New Roman"', 'serif'],
+            },
+            boxShadow: {
+              'paper': '2px 3px 5px rgba(62, 39, 35, 0.3)', 
+              'deep': 'inset 0 2px 10px rgba(0,0,0,0.2)',
+              'deck': '2px 2px 0 #3E2723, 4px 4px 0 #3E2723, 6px 6px 10px rgba(0,0,0,0.3)',
+            }
           }
         }
       }
     </script>
+    
+    <!-- 設定字體 -->
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- 引入 React 和 Babel -->
     <script type="importmap">
-    { "imports": { "react": "https://esm.sh/react@18.2.0", "react-dom/client": "https://esm.sh/react-dom@18.2.0/client", "lucide-react": "https://esm.sh/lucide-react@0.263.1" } }
+    {
+      "imports": {
+        "react": "https://esm.sh/react@18.2.0",
+        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
+        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
+      }
+    }
     </script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+
     <style>
-        body { font-family: 'Zen Maru Gothic', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #E6D5B8; color: #3E2723; }
+        body { 
+            font-family: 'Zen Maru Gothic', sans-serif; 
+            -webkit-tap-highlight-color: transparent;
+            background-color: #E6D5B8;
+            color: #3E2723;
+        }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #E0C097; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #8B4513; border-radius: 4px; }
+        
         .perspective-1000 { perspective: 1000px; }
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
-        @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+
+        @keyframes hop {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-12px); }
+        }
         .animate-hop { animation: hop 0.6s ease-in-out infinite; }
-        .vintage-border { border: 2px solid #8B4513; outline: 2px dashed #BCAAA4; outline-offset: -6px; }
-        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        
+        .vintage-border {
+            border: 2px solid #8B4513;
+            outline: 2px dashed #BCAAA4;
+            outline-offset: -6px;
+        }
+        
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        /* --- 3D Dice Styles --- */
         .dice-scene { width: 60px; height: 60px; perspective: 400px; }
-        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s ease-out; }
+        .dice {
+            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
+            transition: transform 1s ease-out;
+        }
         .dice.rolling { animation: roll 0.5s infinite linear; }
-        .dice-face { position: absolute; width: 60px; height: 60px; background: #FFF; border: 2px solid #E0E0E0; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
+        .dice-face {
+            position: absolute; width: 60px; height: 60px;
+            background: #FFF; border: 2px solid #E0E0E0; border-radius: 12px;
+            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
+            display: flex; align-items: center; justify-content: center;
+        }
         .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
-        .face-1 { transform: rotateY(0deg) translateZ(30px); } .face-2 { transform: rotateY(90deg) translateZ(30px); } .face-3 { transform: rotateY(180deg) translateZ(30px); }
-        .face-4 { transform: rotateY(-90deg) translateZ(30px); } .face-5 { transform: rotateX(90deg) translateZ(30px); } .face-6 { transform: rotateX(-90deg) translateZ(30px); }
-        .dots-1 { justify-content: center; } .dots-2 { justify-content: space-between; padding: 10px; } .dots-2 .dot:nth-child(2) { align-self: flex-end; }
-        .dots-3 { justify-content: space-between; padding: 10px; } .dots-3 .dot:nth-child(2) { align-self: center; } .dots-3 .dot:nth-child(3) { align-self: flex-end; }
-        .dots-4, .dots-5, .dots-6 { display: grid; grid-template-columns: 1fr 1fr; padding: 10px; gap: 8px; } .dots-5 .dot:nth-child(5) { grid-column: 1 / span 2; justify-self: center; align-self: center; }
-        @keyframes roll { 0% { transform: rotateX(0) rotateY(0); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
+        .face-1 { transform: rotateY(0deg) translateZ(30px); }
+        .face-2 { transform: rotateY(90deg) translateZ(30px); }
+        .face-3 { transform: rotateY(180deg) translateZ(30px); }
+        .face-4 { transform: rotateY(-90deg) translateZ(30px); }
+        .face-5 { transform: rotateX(90deg) translateZ(30px); }
+        .face-6 { transform: rotateX(-90deg) translateZ(30px); }
+        
+        .dots-1 { justify-content: center; }
+        .dots-2 { justify-content: space-between; padding: 10px; }
+        .dots-2 .dot:nth-child(2) { align-self: flex-end; }
+        .dots-3 { justify-content: space-between; padding: 10px; }
+        .dots-3 .dot:nth-child(2) { align-self: center; }
+        .dots-3 .dot:nth-child(3) { align-self: flex-end; }
+        .dots-4, .dots-5, .dots-6 { display: grid; grid-template-columns: 1fr 1fr; padding: 10px; gap: 8px; }
+        .dots-5 .dot:nth-child(5) { grid-column: 1 / span 2; justify-self: center; align-self: center; }
+
+        @keyframes roll {
+            0% { transform: rotateX(0) rotateY(0); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
     </style>
 </head>
 <body>
@@ -56,7 +126,7 @@
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect, useRef } from 'react';
         import { createRoot } from 'react-dom/client';
-        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail, Lock } from 'lucide-react';
+        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
 
         // --- 內建聖經資料庫 (保證可讀) ---
         const BIBLE_DB = {
@@ -77,6 +147,9 @@
 
         // --- 資料設定 ---
         const BLESSING_VERSES = [{text:"你當剛強壯膽！不要懼怕。", ref:"約書亞記 1:9"},{text:"流淚撒種的，必歡呼收割。", ref:"詩篇 126:5"},{text:"我的恩典夠你用的。", ref:"哥林多後書 12:9"},{text:"壓傷的蘆葦，他不折斷。", ref:"以賽亞書 42:3"}];
+        const BIBLE_BOOKS_MAPPING = {"創世記":"Genesis","出埃及記":"Exodus","約書亞記":"Joshua","詩篇":"Psalms","箴言":"Proverbs","馬太福音":"Matthew","約翰福音":"John","羅馬書":"Romans","啟示錄":"Revelation"};
+        const FALLBACK_SCRIPTURE = [{verse:1,text:"耶和華是我的牧者，我必不致缺乏。"},{verse:2,text:"他使我躺臥在青草地上，領我在可安歇的水邊。"}];
+        
         const FATE_CARDS = [
           { type: 'bad', text: "百姓在曠野發怨言，信心動搖。", amount: -30, freeze: false, title: "怨言的網羅" },
           { type: 'bad', text: "製造了金牛犢，得罪了神。", amount: -50, freeze: true, title: "偶像的試探" },
@@ -201,15 +274,23 @@
             if (who === 'player' && (tile.type === 'fate' || tile.type === 'chance')) { setWaitingForDraw(tile.type); return; }
             if (tile.type !== 'start') { setTimeout(() => setActiveModal(tile.type), 500); } else { setTurn('cpu'); }
           };
+          
+          // 修正：增加 "跳過回合" 邏輯
+          const handleSkipTurn = () => {
+              notify("曠野省思結束...", "bg-gray-500");
+              setIsFrozen(false);
+              setTurn('cpu');
+          };
+
           const rollDice = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
-            if (isFrozen) { notify("仍在曠野省思中... 暫停一回", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
+            if (isFrozen) { handleSkipTurn(); return; } // 直接跳過
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
             const moveInterval = setInterval(() => { setPlayerPos(prev => (prev + 1) % board.length); }, 200);
           };
           const triggerRoll = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
-            if (isFrozen) { notify("仍在曠野省思中...", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
+            if (isFrozen) { handleSkipTurn(); return; } // 直接跳過
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
             let current = playerPos; let count = 0;
             const interval = setInterval(() => {
@@ -219,6 +300,8 @@
                if (count === val) { clearInterval(interval); setIsMoving(false); handleLandEvent(current, 'player'); }
             }, 200);
            };
+           
+           // CPU Logic
            useEffect(() => {
              if (gameState === 'playing' && turn === 'cpu') {
                 setTimeout(() => {
@@ -243,14 +326,32 @@
               }
               setTimeout(() => setTurn('player'), 1500);
            };
+
+           // 修正：確保狀態更新並顯示通知
            const onModalComplete = (xpG, faithChange, freeze = false) => {
-              if(xpG) { const n = xp+xpG; if(n>=level*100) setLevel(l=>l+1); }
-              if(faithChange) setFaith(f=>Math.max(0, f+faithChange));
-              if(freeze) setIsFrozen(true); setActiveModal(null); setTurn('cpu');
+              if (xpG) {
+                  const nextXp = xp + xpG;
+                  // 這裡只是模擬升級，實際上未實作完整 XP 系統
+                  if (nextXp >= level * 100) { 
+                      setLevel(l => l + 1); 
+                      notify("靈命成長！等級提升！", "bg-yellow-400"); 
+                  }
+              }
+              
+              if (faithChange) {
+                  setFaith(f => Math.max(0, f + faithChange));
+                  if (faithChange > 0) notify(`信心增加 +${faithChange}`);
+                  else notify(`信心減少 ${Math.abs(faithChange)}`, faithChange < 0 ? "bg-red-400" : "bg-amber-500");
+              }
+
+              if (freeze) setIsFrozen(true);
+              setActiveModal(null);
+              setTurn('cpu');
            };
-           const handleBuy = (cost) => { const b=[...board]; b[playerPos].owner='player'; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
-           const handleUpgrade = (cost) => { const b=[...board]; b[playerPos].level+=1; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
-           const handleDestroy = (cost, claim) => { const b=[...board]; b[playerPos].owner=claim?'player':null; b[playerPos].level=0; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
+
+           const handleBuy = (cost) => { const b=[...board]; b[playerPos].owner='player'; setBoard(b); setFaith(f=>f-cost); notify("得地為業！", "bg-indigo-500"); setActiveModal(null); setTurn('cpu'); };
+           const handleUpgrade = (cost) => { const b=[...board]; b[playerPos].level+=1; setBoard(b); setFaith(f=>f-cost); notify("祭壇建立！", "bg-amber-500"); setActiveModal(null); setTurn('cpu'); };
+           const handleDestroy = (cost, claim) => { const b=[...board]; b[playerPos].owner=claim?'player':null; b[playerPos].level=0; setBoard(b); setFaith(f=>f-cost); notify("攻破營壘！", "bg-red-500"); setActiveModal(null); setTurn('cpu'); };
 
            if (gameState === 'start') return <StartScreen onStart={startGame} />;
 
@@ -279,7 +380,11 @@
                                 <div className="w-24 h-24 rounded-full bg-[#FFF8E1] shadow-[inset_0_4px_10px_rgba(0,0,0,0.05)] border-4 border-[#D7CCC8] flex flex-col items-center justify-center mb-4 relative overflow-hidden">
                                     <div className="scale-75"><Dice3D value={diceValue} rolling={isMoving}/></div>
                                 </div>
-                                <button onClick={triggerRoll} disabled={turn !== 'player' || isMoving || activeModal} className={`w-32 py-3 rounded-xl font-black text-[#F3E5AB] shadow-[0_4px_0_#3E2723] text-sm flex items-center justify-center gap-2 transition-all active:translate-y-1 active:shadow-none border-2 border-[#3E2723] ${turn === 'player' && !isFrozen ? 'bg-[#8B4513] hover:bg-[#6D4C41]' : 'bg-[#BCAAA4] cursor-not-allowed border-[#8D6E63] shadow-none'}`}>{isFrozen ? "跳過" : "擲骰子"}</button>
+                                <button onClick={triggerRoll} disabled={turn !== 'player' || isMoving || activeModal} className={`w-32 py-3 rounded-xl font-black text-[#F3E5AB] shadow-[0_4px_0_#3E2723] text-sm flex items-center justify-center gap-2 transition-all active:translate-y-1 active:shadow-none border-2 border-[#3E2723] ${turn === 'player' && !isFrozen ? 'bg-[#8B4513] hover:bg-[#6D4C41]' : 'bg-[#BCAAA4] cursor-not-allowed border-[#8D6E63] shadow-none'}`}>
+                                  {isFrozen ? (
+                                    <span className="flex items-center justify-center gap-1 text-red-800"><Lock size={16}/> 跳過此回合</span>
+                                  ) : "擲骰子"}
+                                </button>
                             </div>
                         )}
                         {waitingForDraw && (<div className="bg-[#FFF8E1] border-2 border-[#8B4513] px-4 py-2 rounded-full text-[#8B4513] font-black animate-bounce shadow-lg flex items-center gap-2 text-sm pointer-events-auto"><Pointer size={16} /> 請點擊牌堆</div>)}
@@ -306,7 +411,7 @@
                      })}
                   </div>
                </div>
-               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
+               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm animate-hop"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
             </div>
            );
         };
