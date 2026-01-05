@@ -70,6 +70,12 @@
         }
         .animate-hop { animation: hop 0.6s ease-in-out infinite; }
         
+        .vintage-border {
+            border: 2px solid #8B4513;
+            outline: 2px dashed #BCAAA4;
+            outline-offset: -6px;
+        }
+        
         .glass-panel {
             background: rgba(255, 255, 255, 0.7);
             backdrop-filter: blur(8px);
@@ -92,7 +98,6 @@
             display: flex; align-items: center; justify-content: center;
         }
         .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
-        /* Faces positioning */
         .face-1 { transform: rotateY(0deg) translateZ(30px); }
         .face-2 { transform: rotateY(90deg) translateZ(30px); }
         .face-3 { transform: rotateY(180deg) translateZ(30px); }
@@ -100,7 +105,6 @@
         .face-5 { transform: rotateX(90deg) translateZ(30px); }
         .face-6 { transform: rotateX(-90deg) translateZ(30px); }
         
-        /* Layout for dots */
         .dots-1 { justify-content: center; }
         .dots-2 { justify-content: space-between; padding: 10px; }
         .dots-2 .dot:nth-child(2) { align-self: flex-end; }
@@ -122,7 +126,8 @@
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect, useRef } from 'react';
         import { createRoot } from 'react-dom/client';
-        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer } from 'lucide-react';
+        // 加入 Facebook, Instagram, AtSign, Mail 等圖示
+        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
 
         // --- 資料庫 (保持不變) ---
         const BLESSING_VERSES = [
@@ -150,38 +155,46 @@
         const FATE_CARDS = [
           { type: 'bad', text: "百姓在曠野發怨言，信心動搖。", amount: -30, freeze: false, title: "怨言的網羅" },
           { type: 'bad', text: "製造了金牛犢，得罪了神。", amount: -50, freeze: true, title: "偶像的試探" },
+          { type: 'bad', text: "聽信探子的惡信，不敢進去。", amount: -20, freeze: true, title: "膽怯的心" },
+          { type: 'bad', text: "因為貪愛世界，底馬離棄了道理。", amount: -40, freeze: false, title: "世界的誘惑" },
+          { type: 'good', text: "你在曠野中單單仰望神。", amount: 50, freeze: false, title: "堅定的信心" },
           { type: 'good', text: "天降嗎哪，每日供應。", amount: 30, freeze: false, title: "神的供應" },
+          { type: 'good', text: "擊敗了來襲的亞瑪力人。", amount: 40, freeze: false, title: "靠主得勝" },
           { type: 'good', text: "雲柱火柱日夜引領。", amount: 60, freeze: false, title: "神的同在" },
         ];
 
         const CHANCE_CARDS = [
           { type: 'quiz', q: "以色列人繞行耶利哥城幾天後城牆倒塌？", options: ["3天", "7天", "12天"], ans: 1, reward: 50 },
           { type: 'quiz', q: "誰在約旦河為耶穌施洗？", options: ["彼得", "施洗約翰", "保羅"], ans: 1, reward: 50 },
+          { type: 'quiz', q: "保羅在哪裡看見大光而悔改？", options: ["耶路撒冷", "大馬色路上", "羅馬"], ans: 1, reward: 60 },
+          { type: 'quiz', q: "耶穌的第一個神蹟是什麼？", options: ["水變酒", "五餅二魚", "醫治瞎子"], ans: 0, reward: 40 },
           { type: 'event_bad', title: "遇到巨人", text: "看見亞納族人高大，心裡害怕。", amount: -30 },
           { type: 'event_bad', title: "瑪拉苦水", text: "水是苦的，無法飲用。", amount: -20 },
+          { type: 'event_bad', title: "遇到強盜", text: "路途中遭遇危險，損失財物。", amount: -40 },
         ];
 
+        // --- 棋盤設定 ---
         const INITIAL_BOARD_MAP = [
-          { id: 0, type: 'start', label: '過紅海', name: '出埃及', color: 'from-yellow-100 to-yellow-200', icon: <Footprints size={20} /> },
-          { id: 1, type: 'city', label: '城池', name: '耶利哥', price: 100, rent: 20, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 0, type: 'start', label: '過約旦河', name: '進迦南', color: 'from-yellow-100 to-yellow-200', icon: <Footprints size={20} /> },
+          { id: 1, type: 'city', label: '城池', name: '吉甲', price: 100, rent: 20, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 2, type: 'fate', label: '命運', name: '曠野', color: 'from-purple-100 to-purple-200', icon: <AlertTriangle size={18} /> },
-          { id: 3, type: 'city', label: '城池', name: '艾城', price: 120, rent: 25, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 3, type: 'city', label: '城池', name: '耶利哥', price: 120, rent: 25, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 4, type: 'bible', label: '讀經', name: '會幕', color: 'from-blue-50 to-blue-100', icon: <Scroll size={18} /> },
-          { id: 5, type: 'city', label: '城池', name: '基遍', price: 140, rent: 30, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 5, type: 'city', label: '城池', name: '艾城', price: 140, rent: 30, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 6, type: 'event_jesus', label: '恩典', name: '加利利海', color: 'from-cyan-50 to-cyan-100', icon: <Cross size={18} /> },
-          { id: 7, type: 'city', label: '城池', name: '希伯崙', price: 160, rent: 35, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 7, type: 'city', label: '城池', name: '基遍', price: 160, rent: 35, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 8, type: 'chance', label: '機會', name: '智慧門', color: 'from-yellow-50 to-yellow-100', icon: <HelpCircle size={18} /> },
-          { id: 9, type: 'city', label: '城池', name: '伯特利', price: 150, rent: 30, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 9, type: 'city', label: '城池', name: '亞雅崙', price: 150, rent: 30, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 10, type: 'prayer', label: '禱告', name: '客西馬尼', color: 'from-orange-50 to-orange-100', icon: <MessageCircle size={18} /> },
-          { id: 11, type: 'city', label: '重鎮', name: '耶路撒冷', price: 300, rent: 60, owner: null, level: 0, color: 'from-rose-50 to-rose-100', icon: <Home size={18} /> },
+          { id: 11, type: 'city', label: '重鎮', name: '希伯崙', price: 300, rent: 60, owner: null, level: 0, color: 'from-rose-50 to-rose-100', icon: <Home size={18} /> },
           { id: 12, type: 'event_paul', label: '事件', name: '大馬色路', color: 'from-indigo-50 to-indigo-100', icon: <MapPin size={18} /> },
-          { id: 13, type: 'city', label: '城池', name: '示劍', price: 200, rent: 40, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 13, type: 'city', label: '城池', name: '底璧', price: 200, rent: 40, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 14, type: 'bible', label: '讀經', name: '庇哩亞', color: 'from-blue-50 to-blue-100', icon: <Scroll size={18} /> },
-          { id: 15, type: 'city', label: '城池', name: '示羅', price: 180, rent: 35, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 15, type: 'city', label: '城池', name: '夏瑣', price: 180, rent: 35, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 16, type: 'fate', label: '命運', name: '風浪', color: 'from-purple-100 to-purple-200', icon: <AlertTriangle size={18} /> },
-          { id: 17, type: 'city', label: '城池', name: '別是巴', price: 220, rent: 45, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 17, type: 'city', label: '城池', name: '示劍', price: 220, rent: 45, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
           { id: 18, type: 'chance', label: '機會', name: '信心門', color: 'from-yellow-50 to-yellow-100', icon: <HelpCircle size={18} /> },
-          { id: 19, type: 'city', label: '城池', name: '夏瑣', price: 250, rent: 50, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
+          { id: 19, type: 'city', label: '城池', name: '示羅', price: 250, rent: 50, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
         ];
 
         const getGridPosition = (index) => {
@@ -256,6 +269,7 @@
                     <path d="M 280 150 Q 300 130 320 150 T 280 150" fill="#87A8B3" opacity="0.6"/>
                     <path d="M 300 160 Q 290 200 310 250 T 290 350" fill="none" stroke="#546E7A" strokeWidth="2" opacity="0.5"/>
                     <path d="M 290 350 Q 270 380 290 420 T 310 380 Q 320 360 290 350" fill="#87A8B3" opacity="0.6"/>
+                    <path d="M 100 700 L 130 650 L 160 700 L 190 660 L 220 700" fill="none" stroke="#5D4037" strokeWidth="2" strokeLinejoin="round" opacity="0.4" />
                     <path d="M 50 750 C 80 700, 150 720, 200 650 S 100 500, 150 450 S 250 350, 280 200" fill="none" stroke="#8B0000" strokeWidth="2" strokeDasharray="6,4" opacity="0.6"/>
                     <rect width="100%" height="100%" fill="url(#vignette)" style={{mixBlendMode: 'multiply'}}/>
                 </svg>
@@ -267,10 +281,32 @@
             <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
               <BackgroundMap />
               <div className="z-10 max-w-md w-full bg-[#F3E5AB] p-8 rounded-xl shadow-[0_10px_30px_rgba(62,39,35,0.4)] border-4 border-[#8B4513] relative vintage-border">
+                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#8B4513] text-[#F3E5AB] px-4 py-1 text-sm font-bold rounded shadow-md tracking-widest">BIBLE ADVENTURE</div>
                 <h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1>
                 <h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2>
-                <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80">🐏</div></div>
+                <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(20%)'}}>🐏</div></div>
+                
+                {/* 遊戲規則 (已補回) */}
+                <div className="text-left mb-8 space-y-3 bg-[#E6D5B8] p-4 rounded border border-[#8B4513]/30 shadow-inner">
+                    <h3 className="font-bold text-[#8B4513] mb-3 flex items-center gap-2 border-b border-[#8B4513]/20 pb-2"><Info size={18} /> 遊戲規則</h3>
+                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p className="text-sm font-bold text-[#3E2723]">擲骰子，累積 <span className="text-[#8B0000]">信心值</span>。</p></div>
+                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p className="text-sm font-bold text-[#3E2723]">攻佔城池，建立 <span className="text-[#8B0000]">祭壇</span> 獻祭。</p></div>
+                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</div><p className="text-sm font-bold text-[#3E2723]">遇到黑公羊的營壘，選擇 <span className="text-[#8B0000]">拆毀</span> 或祝福。</p></div>
+                </div>
+
                 <button onClick={onStart} className="w-full bg-[#8B4513] hover:bg-[#5D4037] text-[#F3E5AB] text-xl font-black py-4 rounded shadow-md border-2 border-[#3E2723]"><Sword size={24} className="inline mr-2"/> 開始征戰</button>
+                
+                {/* 底部團隊與連結 (已補回) */}
+                <div className="mt-8 pt-6 border-t border-[#8B4513]/30">
+                    <p className="text-[#3E2723] font-bold mb-4">耶穌加油站 x 微光新事</p>
+                    <div className="flex justify-center gap-4">
+                        <a href="https://www.facebook.com/profile.php?id=100068500932557" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Facebook size={24} /></a>
+                        <a href="https://www.instagram.com/forever.believe.in.jesus/" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Instagram size={24} /></a>
+                        <a href="https://www.threads.net/@forever.believe.in.jesus" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><AtSign size={24} /></a>
+                        <a href="https://line.me/R/ti/p/@469cjlho" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><MessageCircle size={24} /></a>
+                        <a href="mailto:newthingsinthelittlelight@gmail.com" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Mail size={24} /></a>
+                    </div>
+                </div>
               </div>
             </div>
         );
@@ -285,10 +321,15 @@
             return (
                 <div className="relative w-full h-[450px] perspective-1000 cursor-pointer group" onClick={() => !isFlipped && setIsFlipped(true)}>
                   <div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                    <div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-xl flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}>
-                      <div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6">{icon}</div><h3 className="text-3xl font-black text-[#3E2723]">{frontTitle}</h3><div className="absolute bottom-12 text-[#3E2723]/60 text-sm font-bold animate-pulse">點擊翻開</div>
+                    <div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}>
+                      <div className="border-4 border-dashed border-[#3E2723]/30 w-[90%] h-[90%] absolute rounded-lg pointer-events-none"></div>
+                      <div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6 shadow-md">{icon}</div>
+                      <h3 className="text-3xl font-black text-[#3E2723] tracking-[0.2em] uppercase font-serif drop-shadow-sm">{frontTitle}</h3>
+                      <div className="absolute bottom-12 text-[#3E2723]/60 text-sm font-bold animate-pulse">點擊翻開聖諭</div>
                     </div>
-                    <div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-xl flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto">{backContent}</div>
+                    <div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/paper.png')]">
+                        {backContent}
+                    </div>
                   </div>
                 </div>
             );
@@ -301,6 +342,7 @@
               <div className="w-full text-center h-full flex flex-col justify-center">
                 <div className={`mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center border-4 ${isGood ? 'bg-[#E8F5E9] border-green-600 text-green-600' : 'bg-[#FFEBEE] border-red-600 text-red-600'}`}>{isGood ? <Sun size={40}/> : <CloudRain size={40}/>}</div>
                 <h3 className="text-2xl font-black mb-4 text-[#3E2723]">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-8">{card.text}</p>
+                <div className="mb-8"><span className={`text-xl font-black px-4 py-2 rounded ${isGood ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>信心 {card.amount > 0 ? '+' : ''}{card.amount}</span>{card.freeze && <div className="text-red-600 text-sm mt-2 font-bold flex justify-center items-center gap-1"><PauseCircle size={14}/> 暫停一回合</div>}</div>
                 <GameButton onClick={() => onComplete(0, card.amount, card.freeze)} color={isGood ? "green" : "red"}>{isGood ? "哈利路亞" : "悔改求主"}</GameButton>
               </div>
             } />;
@@ -313,8 +355,8 @@
             const content = card.type === 'quiz' ? (
                 <div className="w-full text-center"><h3 className="text-2xl font-black text-[#8B4513] mb-6">聖經冷知識</h3>
                 {quizStatus === 'ask' && (<><p className="text-[#3E2723] font-bold text-lg mb-6">{card.q}</p><div className="space-y-3">{card.options.map((opt, idx) => <button key={idx} onClick={() => handleAns(idx)} className="w-full bg-[#FFF3E0] text-[#5D4037] border-2 border-[#D7CCC8] py-3 rounded-lg font-bold hover:bg-[#FFE0B2]">{opt}</button>)}</div></>)}
-                {quizStatus === 'correct' && <div className="py-10 animate-bounce text-green-700"><Check size={40} className="mx-auto"/><p className="text-2xl font-black">答對了！</p></div>}
-                {quizStatus === 'wrong' && <div className="py-10 animate-shake text-red-700"><X size={40} className="mx-auto"/><p className="text-2xl font-black">答錯了...</p></div>}
+                {quizStatus === 'correct' && <div className="py-10 animate-bounce text-green-700"><Check size={40} className="mx-auto"/><p className="text-2xl font-black">答對了！</p><p className="font-bold text-green-600">+{card.reward} 信心</p></div>}
+                {quizStatus === 'wrong' && <div className="py-10 animate-shake text-red-700"><X size={40} className="mx-auto"/><p className="text-2xl font-black">答錯了...</p><p className="font-bold text-red-500">暫停一回</p></div>}
                 </div>
             ) : (<div className="w-full text-center h-full flex flex-col justify-center"><CloudRain size={40} className="mx-auto text-gray-500 mb-4"/><h3 className="text-2xl font-black text-[#3E2723] mb-4">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-6">{card.text}</p><GameButton onClick={() => onComplete(0, card.amount)} color="gray">接受挑戰</GameButton></div>);
             return <CardFlip frontTitle="機會牌" frontColor="bg-[#FFE082]" icon={<HelpCircle size={64} />} backContent={content} />;
@@ -339,9 +381,8 @@
                 <div className="bg-[#F3E5AB] p-4 border-b-2 border-[#D7CCC8] mt-4"><h3 className="text-xl font-black text-[#5D4037] text-center flex justify-center gap-2"><BookOpen/> 每日靈糧</h3><p className="text-center text-[#8B4513] font-bold text-sm">{usingFallback ? "詩篇 23" : `${bookName} ${chapter}`}</p></div>
                 <div className="flex-1 overflow-y-auto p-6 custom-scrollbar">{loading ? <div className="text-center mt-10"><Loader className="animate-spin inline"/></div> : <div className="space-y-4">{content.map((v,i)=><div key={i} className="flex gap-2 text-sm"><span className="font-bold text-[#8B4513]">{v.verse}</span><span>{v.text}</span></div>)}</div>}</div>
                 <div className="p-4 bg-[#F3E5AB] space-y-2">
-                   {/* 聖經連結按鈕 */}
                    <a href={`https://www.biblegateway.com/passage/?search=${BIBLE_BOOKS_MAPPING[bookName]}+${chapter}&version=CUV`} target="_blank" className="block w-full py-2 bg-white border-2 border-[#8B4513] text-[#8B4513] text-center font-bold rounded-lg hover:bg-[#EFEBE9] flex items-center justify-center gap-2"><ExternalLink size={16}/> 前往網站閱讀</a>
-                   <GameButton onClick={() => onComplete(30, 80)} disabled={loading} color="amber" icon={Check}>我讀完了 (+80 信心)</GameButton>
+                   <GameButton onClick={() => onComplete(30, 80)} disabled={loading} color="amber" icon={Check}>{loading ? "讀取中..." : "我讀完了 (+80 信心)"}</GameButton>
                 </div>
               </div>
             );
@@ -356,7 +397,6 @@
             }
           };
 
-          if (type === 'bible') return <BibleReader />;
           if (type === 'event_jesus') return (<div className="bg-[#FFF8E7] p-8 rounded-3xl border-4 border-[#87CEEB] text-center"><h3 className="text-2xl font-black text-[#0097A7]">✝️ 遇見耶穌</h3><p className="my-4">領受屬天的祝福...</p><GameButton onClick={() => onComplete(20, 100)} color="cyan">領受 (+100)</GameButton></div>);
           if (type === 'event_paul') return (<div className="bg-[#FFF8E7] p-8 rounded-3xl border-4 border-[#5C6BC0] text-center"><h3 className="text-2xl font-black text-[#3949AB]">⚡ 大馬色路</h3><p className="my-4">暫時看不見，但生命翻轉。</p><GameButton onClick={() => onComplete(50, 50, true)} color="indigo">順服呼召 (+50, 暫停)</GameButton></div>);
           if (type === 'fate') return <FateEvent onComplete={onComplete} />;
@@ -388,7 +428,6 @@
           const startGame = () => { setGameState('playing'); setFaith(1000); setCpuFaith(1000); setPlayerPos(0); setCpuPos(0); setBoard(INITIAL_BOARD_MAP); setLevel(1); };
           const notify = (text, color="bg-amber-500") => { setNotification({ text, color }); setTimeout(() => setNotification(null), 3000); };
           
-          // 修正：移除自動彈窗，改為等待抽卡
           const handleLandEvent = (pos, who) => {
             const tile = board[pos];
             if (who === 'player' && (tile.type === 'fate' || tile.type === 'chance')) {
@@ -410,13 +449,8 @@
             const moveInterval = setInterval(() => {
               setPlayerPos(prev => (prev + 1) % board.length);
             }, 200);
-            
-            // 使用 setTimeout 模擬移動結束，而不是 setInterval 計數，簡化邏輯避免狀態不同步
-            // 重新實作完整的 moveToken
-            // 這裡為了簡潔直接調用 moveToken
           };
           
-          // 真正的 Roll Dice 觸發
            const triggerRoll = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
             if (isFrozen) {
@@ -440,7 +474,6 @@
             }, 200);
            };
            
-           // CPU Logic
            useEffect(() => {
              if (gameState === 'playing' && turn === 'cpu') {
                 setTimeout(() => {
@@ -479,7 +512,6 @@
               setTimeout(() => setTurn('player'), 1500);
            };
 
-           // Actions
            const onModalComplete = (xpG, faithC, frz=false) => {
               if(xpG) { const n = xp+xpG; if(n>=level*100) setLevel(l=>l+1); }
               if(faithC) setFaith(f=>Math.max(0, f+faithC));
@@ -496,7 +528,6 @@
             <div className="min-h-screen flex flex-col items-center justify-center p-2 relative overflow-hidden">
                <BackgroundMap />
                
-               {/* HUD */}
                <div className="w-full max-w-md fixed top-4 z-30 px-4">
                   <div className="glass-panel rounded-xl p-3 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md">
                      <div className="flex justify-between items-center mb-2 px-2"><div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span><div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level}</div></div></div>
@@ -509,20 +540,17 @@
 
                {notification && <div className={`fixed top-44 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
 
-               {/* Board & Center */}
                <div className="relative w-full max-w-md aspect-[9/16] mt-48 mb-4 p-2 scale-95">
                   <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
                      
-                     {/* 2x6 Center Area */}
+                     {/* Center Area */}
                      <div className="absolute top-[12.5%] left-[25%] w-[50%] h-[75%] flex flex-col items-center justify-between py-6 z-20 pointer-events-none">
                         
-                        {/* 1. Decks (Top) */}
                         <div className="flex justify-between w-full px-2 pointer-events-auto">
                             <Deck type="fate" active={waitingForDraw === 'fate'} onClick={() => { setActiveModal('fate'); setWaitingForDraw(null); }} />
                             <Deck type="chance" active={waitingForDraw === 'chance'} onClick={() => { setActiveModal('chance'); setWaitingForDraw(null); }} />
                         </div>
 
-                        {/* 2. Controls (Bottom) - Only show if not waiting for draw */}
                         {!waitingForDraw && (
                             <div className="flex flex-col items-center pointer-events-auto">
                                 <div className="w-24 h-24 rounded-full bg-[#FFF8E1] shadow-[inset_0_4px_10px_rgba(0,0,0,0.05)] border-4 border-[#D7CCC8] flex flex-col items-center justify-center mb-4 relative overflow-hidden">
@@ -532,7 +560,6 @@
                             </div>
                         )}
                         
-                        {/* 3. Waiting Prompt */}
                         {waitingForDraw && (
                             <div className="bg-[#FFF8E1] border-2 border-[#8B4513] px-4 py-2 rounded-full text-[#8B4513] font-black animate-bounce shadow-lg flex items-center gap-2 text-sm pointer-events-auto">
                                 <Pointer size={16} /> 請點擊牌堆
@@ -557,7 +584,7 @@
                                     {BuildingIcon}
                                     <div className="text-[#5D4037] transform scale-90 mb-0.5 opacity-80">{tile.icon}</div>
                                     <div className="text-[9px] font-bold text-[#3E2723] leading-none text-center px-0.5 truncate w-full tracking-tight">{tile.name || tile.label}</div>
-                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">{playerPos===i && <div className="text-2xl animate-hop -mt-4 drop-shadow-md">🐑</div>}{cpuPos===i && <div className="text-2xl mt-4 ml-4 drop-shadow-md grayscale opacity-80">🐏</div>}</div>
+                                    <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30">{playerPos===i && <div className="text-2xl animate-hop -mt-4 drop-shadow-md">🐑</div>}{cpuPos===i && <div className="text-2xl mt-4 ml-4 drop-shadow-md" style={{filter: 'grayscale(100%) brightness(20%)'}}>🐏</div>}</div>
                                 </div>
                             </div>
                          )
