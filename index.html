@@ -98,6 +98,7 @@
             display: flex; align-items: center; justify-content: center;
         }
         .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
+        /* Faces positioning */
         .face-1 { transform: rotateY(0deg) translateZ(30px); }
         .face-2 { transform: rotateY(90deg) translateZ(30px); }
         .face-3 { transform: rotateY(180deg) translateZ(30px); }
@@ -105,6 +106,7 @@
         .face-5 { transform: rotateX(90deg) translateZ(30px); }
         .face-6 { transform: rotateX(-90deg) translateZ(30px); }
         
+        /* Layout for dots */
         .dots-1 { justify-content: center; }
         .dots-2 { justify-content: space-between; padding: 10px; }
         .dots-2 .dot:nth-child(2) { align-self: flex-end; }
@@ -128,7 +130,7 @@
         import { createRoot } from 'react-dom/client';
         import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
 
-        // --- 資料庫 ---
+        // --- 資料庫 (保持不變) ---
         const BLESSING_VERSES = [
           { text: "你當剛強壯膽！不要懼怕，也不要驚惶。", ref: "約書亞記 1:9" },
           { text: "流淚撒種的，必歡呼收割。", ref: "詩篇 126:5" },
@@ -241,13 +243,18 @@
                 <h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1>
                 <h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2>
                 <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(20%)'}}>🐏</div></div>
+                
+                {/* 遊戲規則 */}
                 <div className="text-left mb-8 space-y-3 bg-[#E6D5B8] p-4 rounded border border-[#8B4513]/30 shadow-inner">
                     <h3 className="font-bold text-[#8B4513] mb-3 flex items-center gap-2 border-b border-[#8B4513]/20 pb-2"><Info size={18} /> 遊戲規則</h3>
                     <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p className="text-sm font-bold text-[#3E2723]">擲骰子，累積 <span className="text-[#8B0000]">信心值</span>。</p></div>
                     <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p className="text-sm font-bold text-[#3E2723]">攻佔城池，建立 <span className="text-[#8B0000]">祭壇</span> 獻祭。</p></div>
                     <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</div><p className="text-sm font-bold text-[#3E2723]">遇到黑公羊的營壘，選擇 <span className="text-[#8B0000]">拆毀</span> 或祝福。</p></div>
                 </div>
+
                 <button onClick={onStart} className="w-full bg-[#8B4513] hover:bg-[#5D4037] text-[#F3E5AB] text-xl font-black py-4 rounded shadow-md border-2 border-[#3E2723]"><Sword size={24} className="inline mr-2"/> 開始征戰</button>
+                
+                {/* 底部團隊與連結 */}
                 <div className="mt-8 pt-6 border-t border-[#8B4513]/30">
                     <p className="text-[#3E2723] font-bold mb-4">耶穌加油站 x 微光新事</p>
                     <div className="flex justify-center gap-4">
@@ -359,18 +366,21 @@
 
           const startGame = () => { setGameState('playing'); setFaith(1000); setCpuFaith(1000); setPlayerPos(0); setCpuPos(0); setBoard(INITIAL_BOARD_MAP); setLevel(1); };
           const notify = (text, color="bg-amber-500") => { setNotification({ text, color }); setTimeout(() => setNotification(null), 3000); };
+          
           const handleLandEvent = (pos, who) => {
             const tile = board[pos];
             if (who === 'player' && (tile.type === 'fate' || tile.type === 'chance')) { setWaitingForDraw(tile.type); return; }
             if (tile.type !== 'start') { setTimeout(() => setActiveModal(tile.type), 500); } else { setTurn('cpu'); }
           };
+          
           const rollDice = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
             if (isFrozen) { notify("仍在曠野省思中... 暫停一回", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
             const moveInterval = setInterval(() => { setPlayerPos(prev => (prev + 1) % board.length); }, 200);
           };
-          const triggerRoll = () => {
+          
+           const triggerRoll = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
             if (isFrozen) { notify("仍在曠野省思中...", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
@@ -382,6 +392,7 @@
                if (count === val) { clearInterval(interval); setIsMoving(false); handleLandEvent(current, 'player'); }
             }, 200);
            };
+           
            useEffect(() => {
              if (gameState === 'playing' && turn === 'cpu') {
                 setTimeout(() => {
@@ -395,6 +406,7 @@
                 }, 1000);
              }
            }, [turn, gameState]);
+           
            const handleCpuLandEvent = (pos) => {
               const tile = board[pos];
               if (tile.owner === 'player') {
@@ -406,11 +418,15 @@
               }
               setTimeout(() => setTurn('player'), 1500);
            };
-           const onModalComplete = (xpG, faithC, frz=false) => {
+           
+           // 修正函式名稱與參數
+           const onModalComplete = (xpG, faithChange, freeze = false) => {
               if(xpG) { const n = xp+xpG; if(n>=level*100) setLevel(l=>l+1); }
-              if(faithC) setFaith(f=>Math.max(0, f+faithC));
-              if(frz) setIsFrozen(true); setActiveModal(null); setTurn('cpu');
+              if(faithChange) setFaith(f=>Math.max(0, f+faithChange));
+              if(freeze) setIsFrozen(true); 
+              setActiveModal(null); setTurn('cpu');
            };
+           
            const handleBuy = (cost) => { const b=[...board]; b[playerPos].owner='player'; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
            const handleUpgrade = (cost) => { const b=[...board]; b[playerPos].level+=1; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
            const handleDestroy = (cost, claim) => { const b=[...board]; b[playerPos].owner=claim?'player':null; b[playerPos].level=0; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
@@ -420,6 +436,7 @@
            return (
             <div className="min-h-screen flex flex-col items-center justify-center p-2 relative overflow-hidden">
                <BackgroundMap />
+               
                <div className="w-full max-w-md fixed top-4 z-30 px-4">
                   <div className="glass-panel rounded-xl p-3 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md">
                      <div className="flex justify-between items-center mb-2 px-2"><div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span><div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level}</div></div></div>
@@ -429,7 +446,9 @@
                      </div>
                   </div>
                </div>
+               
                {notification && <div className={`fixed top-36 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
+               
                <div className="relative w-full max-w-md aspect-[9/16] mt-32 mb-4 p-2 scale-95">
                   <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
                      <div className="absolute top-[12.5%] left-[25%] w-[50%] h-[75%] flex flex-col items-center justify-between py-6 z-20 pointer-events-none">
