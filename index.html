@@ -223,7 +223,7 @@
                 <h1 className="text-4xl font-black text-[#3E2723] mb-2 mt-4 tracking-widest font-serif drop-shadow-sm">天國大富翁</h1>
                 <h2 className="text-lg font-bold text-[#5D4037] mb-8 font-serif italic">- 應許之地篇 -</h2>
                 <div className="flex justify-center items-center gap-8 mb-10">
-                  <div className="flex flex-col items-center">
+                  <div className="flex flex-col items-center animate-bounce">
                     <div className="w-20 h-20 bg-white rounded-full shadow-[0_4px_0_#8B4513] border-4 border-[#8B4513] flex items-center justify-center text-5xl relative">
                         🐑
                         <div className="absolute -bottom-3 bg-[#3E2723] text-[#F3E5AB] text-xs px-2 py-0.5 rounded font-bold">YOU</div>
@@ -260,12 +260,9 @@
                 cyan: "bg-[#1ABC9C] text-white border-[#148F77] shadow-[#0E6655]",
                 green: "bg-[#27AE60] text-white border-[#1E8449] shadow-[#145A32]",
             };
-            const btnStyle = disabled 
-                ? "bg-[#D7CCC8] text-[#A1887F] border-[#A1887F] cursor-not-allowed border-2" 
-                : `${colors[color]} border-b-4 active:border-b-0 active:translate-y-1 active:shadow-none shadow-md`;
-            
+            const bgClass = disabled ? "bg-gray-300 text-gray-500 cursor-not-allowed" : `${colors[color]} text-white shadow-lg active:scale-95 active:shadow-none`;
             return (
-                <button onClick={onClick} disabled={disabled} className={`w-full py-3.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${btnStyle}`}>
+                <button onClick={onClick} disabled={disabled} className={`w-full py-3.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${bgClass}`}>
                     {Icon && <Icon size={20} strokeWidth={2.5} />}
                     {children}
                 </button>
@@ -294,6 +291,7 @@
         const FateEvent = ({ onComplete }) => {
             const [card] = useState(() => FATE_CARDS[Math.floor(Math.random() * FATE_CARDS.length)]);
             const isGood = card.type === 'good';
+            
             const backContent = (
               <div className="w-full text-center h-full flex flex-col justify-center">
                 <div className={`mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center border-4 ${isGood ? 'bg-[#E8F5E9] border-green-600 text-green-600' : 'bg-[#FFEBEE] border-red-600 text-red-600'}`}>
@@ -316,21 +314,40 @@
         const ChanceEvent = ({ onComplete }) => {
             const [card] = useState(() => CHANCE_CARDS[Math.floor(Math.random() * CHANCE_CARDS.length)]);
             const [quizStatus, setQuizStatus] = useState('ask');
-            const handleAns = (idx) => { if (idx === card.ans) { setQuizStatus('correct'); setTimeout(() => onComplete(20, card.reward), 1500); } else { setQuizStatus('wrong'); setTimeout(() => onComplete(0, 0, true), 1500); } };
+
+            const handleAns = (idx) => { 
+                if (idx === card.ans) { setQuizStatus('correct'); setTimeout(() => onComplete(20, card.reward), 1500); } 
+                else { setQuizStatus('wrong'); setTimeout(() => onComplete(0, 0, true), 1500); } 
+            };
+
             const renderBackContent = () => {
                 if (card.type === 'quiz') {
                     return (
                         <div className="w-full text-center">
                             <h3 className="text-2xl font-black text-[#8B4513] mb-6 font-serif decoration-double underline decoration-[#D7CCC8]">聖經冷知識</h3>
-                            {quizStatus === 'ask' && (<div className="w-full"><p className="text-[#3E2723] font-bold text-lg leading-relaxed mb-6">{card.q}</p><div className="space-y-3">{card.options.map((opt, idx) => (<button key={idx} onClick={() => handleAns(idx)} className="w-full bg-[#FFF3E0] text-[#5D4037] border-2 border-[#D7CCC8] py-3 rounded-lg font-bold hover:bg-[#FFE0B2] hover:border-[#FFB74D] transition-all active:scale-95 shadow-sm">{opt}</button>))}</div></div>)}
-                            {quizStatus === 'correct' && (<div className="py-10 animate-bounce text-green-700"><div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-green-200"><Check size={40} /></div><p className="text-2xl font-black">答對了！</p><p className="font-bold">+{card.reward} 信心</p></div>)}
-                            {quizStatus === 'wrong' && (<div className="py-10 animate-shake text-red-700"><div className="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-200"><X size={40} /></div><p className="text-2xl font-black">答錯了...</p><p className="font-bold">暫停一回</p></div>)}
+                            {quizStatus === 'ask' && (
+                                <div className="w-full">
+                                    <div className="bg-amber-50 p-4 rounded-xl mb-6 border border-amber-100"><p className="text-gray-800 font-bold text-lg leading-relaxed">{card.q}</p></div>
+                                    <div className="space-y-3">{card.options.map((opt, idx) => (<button key={idx} onClick={() => handleAns(idx)} className="w-full bg-[#FFF3E0] text-[#5D4037] border-2 border-[#D7CCC8] py-3 rounded-lg font-bold hover:bg-[#FFE0B2] hover:border-[#FFB74D] transition-all active:scale-95 shadow-sm">{opt}</button>))}</div>
+                                </div>
+                            )}
+                            {quizStatus === 'correct' && (
+                                <div className="py-10 animate-bounce text-green-700"><div className="bg-green-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-green-200"><Check size={40} /></div><p className="text-2xl font-black">答對了！</p><p className="font-bold">+{card.reward} 信心</p></div>
+                            )}
+                            {quizStatus === 'wrong' && (
+                                <div className="py-10 animate-shake text-red-700"><div className="bg-red-100 w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-4 border-4 border-red-200"><X size={40} /></div><p className="text-2xl font-black">答錯了...</p><p className="font-bold">暫停一回</p></div>
+                            )}
                         </div>
                     );
                 } else {
-                    return (<div className="w-full text-center h-full flex flex-col justify-center"><div className="mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center bg-gray-200 text-gray-600 border-4 border-gray-300"><CloudRain size={40}/></div><h3 className="text-2xl font-black text-[#3E2723] mb-4">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] leading-relaxed mb-6">{card.text}</p><div className="inline-block bg-red-50 border border-red-200 px-4 py-2 rounded-lg mb-8"><p className="text-red-800 font-black">信心值 {card.amount}</p></div><GameButton onClick={() => onComplete(0, card.amount)} color="gray">接受挑戰</GameButton></div>);
+                    return (
+                      <div className="w-full text-center h-full flex flex-col justify-center">
+                        <div className="mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center bg-gray-200 text-gray-600 border-4 border-gray-300"><CloudRain size={40}/></div><h3 className="text-2xl font-black text-[#3E2723] mb-4">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] leading-relaxed mb-6">{card.text}</p><div className="inline-block bg-red-50 border border-red-200 px-4 py-2 rounded-lg mb-8"><p className="text-red-800 font-black">信心值 {card.amount}</p></div><GameButton onClick={() => onComplete(0, card.amount)} color="gray">接受挑戰</GameButton>
+                      </div>
+                    );
                 }
             };
+
             return <CardFlip frontTitle="機會牌" frontColor="bg-[#FFE082]" icon={<HelpCircle size={64} />} backContent={renderBackContent()} />;
         };
 
@@ -341,15 +358,29 @@
             const [content, setContent] = useState(null);
             const [loading, setLoading] = useState(true);
             const [usingFallback, setUsingFallback] = useState(false);
+
             useEffect(() => {
               const fetchBible = async () => {
-                setLoading(true); const engBook = BIBLE_BOOKS_MAPPING[bookName];
-                try { const res = await fetch(`https://bible-api.com/${engBook}+${chapter}?translation=cuv`); if (!res.ok) throw new Error("API Error"); const data = await res.json(); if (data.verses) setContent(data.verses); else throw new Error("No data"); } 
-                catch (err) { setUsingFallback(true); setContent(FALLBACK_SCRIPTURE); } setLoading(false);
-              }; fetchBible();
+                setLoading(true);
+                const engBook = BIBLE_BOOKS_MAPPING[bookName];
+                try {
+                  const res = await fetch(`https://bible-api.com/${engBook}+${chapter}?translation=cuv`);
+                  if (!res.ok) throw new Error("API Error");
+                  const data = await res.json();
+                  if (data.verses) setContent(data.verses); 
+                  else throw new Error("No data");
+                } catch (err) { 
+                  console.error("Bible fetch failed, using fallback", err);
+                  setUsingFallback(true);
+                  setContent(FALLBACK_SCRIPTURE);
+                }
+                setLoading(false);
+              };
+              fetchBible();
             }, [bookName, chapter]);
+
             return (
-              <div className="bg-[#FFF8E7] rounded-3xl shadow-2xl border-8 border-[#8B4513] flex flex-col h-[500px] overflow-hidden relative">
+              <div className="bg-white rounded-3xl shadow-2xl border-4 border-blue-100 flex flex-col h-[500px] overflow-hidden relative">
                 <div className="absolute top-0 left-0 w-full h-4 bg-[#8B4513]"></div>
                 <div className="bg-[#F3E5AB] p-4 border-b-2 border-[#D7CCC8] flex-shrink-0 mt-4">
                    <h3 className="text-xl font-black text-[#5D4037] text-center flex items-center justify-center gap-2 font-serif"><BookOpen size={20} /> 每日靈糧</h3>
@@ -371,10 +402,23 @@
             if (isOwner) {
               const upgradeCost = Math.floor(tileData.price * 0.6);
               const isFirstUpgrade = tileData.level === 0;
-              return (<div className="mt-4 pt-4 border-t-2 border-[#D7CCC8] w-full"><p className="text-sm text-center text-[#5D4037] mb-3 font-bold">這是你的屬地 (Lv.{tileData.level})</p><GameButton onClick={() => onUpgrade(upgradeCost)} disabled={coins < upgradeCost} color="amber" icon={isFirstUpgrade ? Home : Flame}>{isFirstUpgrade ? `建立祭壇 (-${upgradeCost})` : `獻祭 (提升恩膏) (-${upgradeCost})`}</GameButton><p className="text-[10px] text-[#8B4513] text-center mt-2 font-bold">{isFirstUpgrade ? "建立祭壇可保護產業不被拆毀！" : "獻祭次數越多，過路費越高！"}</p></div>);
+              return (
+                <div className="mt-4 pt-4 border-t-2 border-[#D7CCC8] w-full">
+                  <p className="text-sm text-center text-[#5D4037] mb-3 font-bold">這是你的屬地 (Lv.{tileData.level})</p>
+                  <GameButton 
+                    onClick={() => onUpgrade(upgradeCost)} 
+                    disabled={coins < upgradeCost} 
+                    color="amber" 
+                    icon={isFirstUpgrade ? Home : Flame}
+                  >
+                    {isFirstUpgrade ? `建立祭壇 (-${upgradeCost})` : `獻祭 (提升恩膏) (-${upgradeCost})`}
+                  </GameButton>
+                  <p className="text-[10px] text-[#8B4513] text-center mt-2 font-bold">{isFirstUpgrade ? "建立祭壇可保護產業不被拆毀！" : "獻祭次數越多，過路費越高！"}</p>
+                </div>
+              );
             }
             if (!tileData.owner) {
-              return (<div className="mt-4 pt-4 border-t-2 border-[#D7CCC8] w-full"><p className="text-sm text-center text-[#5D4037] mb-3 font-bold">此地無人看守，是否得地為業？</p><GameButton onClick={() => onBuy(tileData.price)} disabled={coins < tileData.price} color="indigo" icon={Sword}>攻佔這座城 (-{tileData.price})</GameButton></div>);
+              return (<div className="mt-4 pt-4 border-t-2 border-[#D7CCC8] w-full"><p className="text-sm text-center text-[#5D4037] mb-3 font-bold">此地無人看守，是否得地為業？</p><GameButton onClick={() => onBuy(tileData.price)} disabled={coins < tileData.price} color="indigo" icon={Sword}>攻佔這座城 (建立城池) (-{tileData.price})</GameButton></div>);
             }
             if (tileData.owner === 'cpu') {
                const rentCost = tileData.rent * (tileData.level + 1);
@@ -438,6 +482,7 @@
           const [faith, setFaith] = useState(1000); 
           const [cpuFaith, setCpuFaith] = useState(1000);
           const [level, setLevel] = useState(1);
+          const [xp, setXp] = useState(0);
           const [turn, setTurn] = useState('player'); 
           const [isMoving, setIsMoving] = useState(false);
           const [diceValue, setDiceValue] = useState(1);
@@ -561,8 +606,7 @@
               <div className="w-full max-w-md fixed top-4 z-30 px-4">
                 <div className="glass-panel rounded-xl p-3 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md">
                     <div className="flex justify-between items-center mb-2 px-2">
-                        <div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span></div>
-                        <div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level} 靈命</div>
+                        <div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span><div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level} 靈命</div></div>
                     </div>
                     <div className="flex gap-2">
                         <div className={`flex-1 bg-[#F3E5AB] rounded-lg p-2 border transition-all duration-300 ${turn === 'player' ? 'border-[#8B4513] shadow-md scale-[1.02] bg-[#FFF8E1]' : 'border-transparent opacity-70 grayscale'}`}>
@@ -577,11 +621,10 @@
                 </div>
               </div>
 
-              {notification && (<div className={`fixed top-44 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>)}
+              {notification && (<div className={`fixed top-36 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>)}
 
-              <div className="relative w-full max-w-md aspect-[9/16] mt-48 mb-4 p-2 scale-95">
+              <div className="relative w-full max-w-md aspect-[9/16] mt-40 mb-4 p-2 scale-95">
                 <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
-                   {/* Center Hub */}
                    <div className="absolute inset-0 m-auto w-[45%] h-[30%] flex flex-col items-center justify-center z-10">
                       <div className="w-32 h-32 rounded-full bg-[#FFF8E1] shadow-[0_8px_0_rgba(62,39,35,0.2),inset_0_4px_10px_rgba(255,255,255,0.5)] border-4 border-[#D7CCC8] flex flex-col items-center justify-center mb-6 relative overflow-hidden">
                          <div className={`w-16 h-16 bg-white rounded-xl shadow-inner flex items-center justify-center border border-[#E0E0E0] ${isMoving ? 'animate-spin' : ''}`}>{isMoving ? <RefreshCw className="text-[#8D6E63]" /> : <span className="text-4xl font-black text-[#3E2723] font-serif">{diceValue}</span>}</div>
@@ -589,8 +632,6 @@
                       </div>
                       <button onClick={rollDice} disabled={turn !== 'player' || isMoving || activeModal} className={`w-full py-4 rounded-xl font-black text-[#F3E5AB] shadow-[0_4px_0_#3E2723] text-lg flex items-center justify-center gap-2 transition-all transform active:translate-y-1 active:shadow-none border-2 border-[#3E2723] ${turn === 'player' && !isFrozen ? 'bg-[#8B4513] hover:bg-[#6D4C41]' : 'bg-[#BCAAA4] cursor-not-allowed border-[#8D6E63] shadow-none'}`}>{isFrozen ? <PauseCircle /> : <Dices />}{isFrozen ? "跳過回合" : "擲骰子"}</button>
                    </div>
-                   
-                   {/* Tiles */}
                    {board.map((tile, i) => {
                      const pos = getGridPosition(i);
                      const style = { left: `${pos.x * 25}%`, top: `${pos.y * 12.5}%`, width: '25%', height: '12.5%' };
@@ -600,10 +641,8 @@
                         const level = tile.level;
                         BuildingIcon = (<div className={`absolute -top-3 right-0 flex items-end ${colorClass} z-20 transition-all duration-300 drop-shadow-md`}><Castle size={18} fill="currentColor" />{level >= 1 && (<div className="flex -ml-1 mb-1">{[...Array(level)].map((_, idx) => (<Flame key={idx} size={14} fill={tile.owner === 'player' ? '#FF6F00' : '#AB47BC'} className={idx > 0 ? "-ml-2 text-white" : "text-white"} />))}</div>)}</div>);
                      }
-                     // 紙張質感格子
                      const bgStyle = tile.color.replace('from-', 'from-').replace('to-', 'to-'); 
                      const ownerBorder = tile.owner === 'player' ? 'border-[#1E88E5] border-2 bg-[#E3F2FD]' : tile.owner === 'cpu' ? 'border-[#8E24AA] border-2 bg-[#F3E5F5]' : 'border-[#8D6E63]/30 border bg-[#FFF8E1]';
-                     
                      return (
                        <div key={tile.id} className="absolute p-1 transition-all" style={style}>
                          <div className={`w-full h-full rounded shadow-sm flex flex-col items-center justify-center relative overflow-visible ${ownerBorder}`}>
