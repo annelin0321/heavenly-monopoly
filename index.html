@@ -4,122 +4,50 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>天國大富翁：應許之地</title>
-    
-    <!-- 引入 Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
         theme: {
           extend: {
             colors: {
-              'adventure-bg': '#E6D5B8', 
-              'adventure-paper': '#F3E5AB',
-              'adventure-ink': '#3E2723',
-              'adventure-gold': '#B8860B', 
-              'adventure-red': '#8B0000',
-              'adventure-sea': '#87A8B3',
+              'adventure-bg': '#E6D5B8', 'adventure-paper': '#F3E5AB', 'adventure-ink': '#3E2723',
+              'adventure-gold': '#B8860B', 'adventure-red': '#8B0000', 'adventure-sea': '#87A8B3',
             },
-            fontFamily: {
-              'rounded': ['"Zen Maru Gothic"', 'sans-serif'],
-              'serif': ['"Times New Roman"', 'serif'],
-            },
-            boxShadow: {
-              'paper': '2px 3px 5px rgba(62, 39, 35, 0.3)', 
-              'deep': 'inset 0 2px 10px rgba(0,0,0,0.2)',
-              'deck': '2px 2px 0 #3E2723, 4px 4px 0 #3E2723, 6px 6px 10px rgba(0,0,0,0.3)',
-            }
+            fontFamily: { 'rounded': ['"Zen Maru Gothic"', 'sans-serif'], 'serif': ['"Times New Roman"', 'serif'] },
+            boxShadow: { 'paper': '2px 3px 5px rgba(62, 39, 35, 0.3)', 'deck': '2px 2px 0 #3E2723, 4px 4px 0 #3E2723, 6px 6px 10px rgba(0,0,0,0.3)' }
           }
         }
       }
     </script>
-    
-    <!-- 設定字體 -->
     <link href="https://fonts.googleapis.com/css2?family=Zen+Maru+Gothic:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- 引入 React 和 Babel -->
     <script type="importmap">
-    {
-      "imports": {
-        "react": "https://esm.sh/react@18.2.0",
-        "react-dom/client": "https://esm.sh/react-dom@18.2.0/client",
-        "lucide-react": "https://esm.sh/lucide-react@0.263.1"
-      }
-    }
+    { "imports": { "react": "https://esm.sh/react@18.2.0", "react-dom/client": "https://esm.sh/react-dom@18.2.0/client", "lucide-react": "https://esm.sh/lucide-react@0.263.1" } }
     </script>
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
-
     <style>
-        body { 
-            font-family: 'Zen Maru Gothic', sans-serif; 
-            -webkit-tap-highlight-color: transparent;
-            background-color: #E6D5B8;
-            color: #3E2723;
-        }
+        body { font-family: 'Zen Maru Gothic', sans-serif; -webkit-tap-highlight-color: transparent; background-color: #E6D5B8; color: #3E2723; }
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: #E0C097; border-radius: 4px; }
         .custom-scrollbar::-webkit-scrollbar-thumb { background: #8B4513; border-radius: 4px; }
-        
         .perspective-1000 { perspective: 1000px; }
         .transform-style-3d { transform-style: preserve-3d; }
         .backface-hidden { backface-visibility: hidden; }
         .rotate-y-180 { transform: rotateY(180deg); }
-
-        @keyframes hop {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-12px); }
-        }
+        @keyframes hop { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
         .animate-hop { animation: hop 0.6s ease-in-out infinite; }
-        
-        .vintage-border {
-            border: 2px solid #8B4513;
-            outline: 2px dashed #BCAAA4;
-            outline-offset: -6px;
-        }
-        
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(8px);
-            -webkit-backdrop-filter: blur(8px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
-        }
-
-        /* --- 3D Dice Styles --- */
+        .vintage-border { border: 2px solid #8B4513; outline: 2px dashed #BCAAA4; outline-offset: -6px; }
+        .glass-panel { background: rgba(255, 255, 255, 0.7); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); border: 1px solid rgba(255, 255, 255, 0.5); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
         .dice-scene { width: 60px; height: 60px; perspective: 400px; }
-        .dice {
-            width: 100%; height: 100%; position: relative; transform-style: preserve-3d;
-            transition: transform 1s ease-out;
-        }
+        .dice { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 1s ease-out; }
         .dice.rolling { animation: roll 0.5s infinite linear; }
-        .dice-face {
-            position: absolute; width: 60px; height: 60px;
-            background: #FFF; border: 2px solid #E0E0E0; border-radius: 12px;
-            box-shadow: inset 0 0 10px rgba(0,0,0,0.1);
-            display: flex; align-items: center; justify-content: center;
-        }
+        .dice-face { position: absolute; width: 60px; height: 60px; background: #FFF; border: 2px solid #E0E0E0; border-radius: 12px; box-shadow: inset 0 0 10px rgba(0,0,0,0.1); display: flex; align-items: center; justify-content: center; }
         .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
-        /* Faces positioning */
-        .face-1 { transform: rotateY(0deg) translateZ(30px); }
-        .face-2 { transform: rotateY(90deg) translateZ(30px); }
-        .face-3 { transform: rotateY(180deg) translateZ(30px); }
-        .face-4 { transform: rotateY(-90deg) translateZ(30px); }
-        .face-5 { transform: rotateX(90deg) translateZ(30px); }
-        .face-6 { transform: rotateX(-90deg) translateZ(30px); }
-        
-        /* Layout for dots */
-        .dots-1 { justify-content: center; }
-        .dots-2 { justify-content: space-between; padding: 10px; }
-        .dots-2 .dot:nth-child(2) { align-self: flex-end; }
-        .dots-3 { justify-content: space-between; padding: 10px; }
-        .dots-3 .dot:nth-child(2) { align-self: center; }
-        .dots-3 .dot:nth-child(3) { align-self: flex-end; }
-        .dots-4, .dots-5, .dots-6 { display: grid; grid-template-columns: 1fr 1fr; padding: 10px; gap: 8px; }
-        .dots-5 .dot:nth-child(5) { grid-column: 1 / span 2; justify-self: center; align-self: center; }
-
-        @keyframes roll {
-            0% { transform: rotateX(0) rotateY(0); }
-            100% { transform: rotateX(360deg) rotateY(360deg); }
-        }
+        .face-1 { transform: rotateY(0deg) translateZ(30px); } .face-2 { transform: rotateY(90deg) translateZ(30px); } .face-3 { transform: rotateY(180deg) translateZ(30px); }
+        .face-4 { transform: rotateY(-90deg) translateZ(30px); } .face-5 { transform: rotateX(90deg) translateZ(30px); } .face-6 { transform: rotateX(-90deg) translateZ(30px); }
+        .dots-1 { justify-content: center; } .dots-2 { justify-content: space-between; padding: 10px; } .dots-2 .dot:nth-child(2) { align-self: flex-end; }
+        .dots-3 { justify-content: space-between; padding: 10px; } .dots-3 .dot:nth-child(2) { align-self: center; } .dots-3 .dot:nth-child(3) { align-self: flex-end; }
+        .dots-4, .dots-5, .dots-6 { display: grid; grid-template-columns: 1fr 1fr; padding: 10px; gap: 8px; } .dots-5 .dot:nth-child(5) { grid-column: 1 / span 2; justify-self: center; align-self: center; }
+        @keyframes roll { 0% { transform: rotateX(0) rotateY(0); } 100% { transform: rotateX(360deg) rotateY(360deg); } }
     </style>
 </head>
 <body>
@@ -128,31 +56,27 @@
     <script type="text/babel" data-type="module">
         import React, { useState, useEffect, useRef } from 'react';
         import { createRoot } from 'react-dom/client';
-        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
+        import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail, Lock } from 'lucide-react';
 
-        // --- 資料庫 (保持不變) ---
-        const BLESSING_VERSES = [
-          { text: "你當剛強壯膽！不要懼怕，也不要驚惶。", ref: "約書亞記 1:9" },
-          { text: "流淚撒種的，必歡呼收割。", ref: "詩篇 126:5" },
-          { text: "我的恩典夠你用的，因為我的能力是在人的軟弱上顯得完全。", ref: "哥林多後書 12:9" },
-          { text: "壓傷的蘆葦，他不折斷；將殘的燈火，他不吹滅。", ref: "以賽亞書 42:3" },
-        ];
-
-        const BIBLE_BOOKS_MAPPING = {
-          "創世記": "Genesis", "出埃及記": "Exodus", "約書亞記": "Joshua", "詩篇": "Psalms", "箴言": "Proverbs",
-          "馬太福音": "Matthew", "約翰福音": "John", "羅馬書": "Romans", "啟示錄": "Revelation"
+        // --- 內建聖經資料庫 (保證可讀) ---
+        const BIBLE_DB = {
+            "創世記": [
+                { verse: 1, text: "起初，神創造天地。" }, { verse: 2, text: "地是空虛混沌，淵面黑暗；神的靈運行在水面上。" },
+                { verse: 3, text: "神說：「要有光」，就有了光。" }, { verse: 4, text: "神看光是好的，就把光暗分開了。" }
+            ],
+            "詩篇": [
+                { verse: 1, text: "耶和華是我的牧者，我必不致缺乏。" }, { verse: 2, text: "他使我躺臥在青草地上，領我在可安歇的水邊。" },
+                { verse: 3, text: "他使我的靈魂甦醒，為自己的名引導我走義路。" }, { verse: 4, text: "我雖然行過死蔭的幽谷，也不怕遭害，因為你與我同在；你的杖，你的竿，都安慰我。" }
+            ],
+            "馬太福音": [
+                { verse: 3, text: "虛心的人有福了！因為天國是他們的。" }, { verse: 4, text: "哀慟的人有福了！因為他們必得安慰。" },
+                { verse: 5, text: "溫柔的人有福了！因為他們必承受地土。" }, { verse: 6, text: "飢渴慕義的人有福了！因為他們必得飽足。" }
+            ]
         };
-        const BIBLE_BOOKS = Object.keys(BIBLE_BOOKS_MAPPING);
+        const BIBLE_BOOKS = Object.keys(BIBLE_DB);
 
-        const FALLBACK_SCRIPTURE = [
-            { verse: 1, text: "耶和華是我的牧者，我必不致缺乏。" },
-            { verse: 2, text: "他使我躺臥在青草地上，領我在可安歇的水邊。" },
-            { verse: 3, text: "他使我的靈魂甦醒，為自己的名引導我走義路。" },
-            { verse: 4, text: "我雖然行過死蔭的幽谷，也不怕遭害，因為你與我同在；你的杖，你的竿，都安慰我。" },
-            { verse: 5, text: "在我敵人面前，你為我擺設筵席；你用油膏了我的頭，使我的福杯滿溢。" },
-            { verse: 6, text: "我一生一世必有恩惠慈愛隨著我；我且要住在耶和華的殿中，直到永遠。" }
-        ];
-
+        // --- 資料設定 ---
+        const BLESSING_VERSES = [{text:"你當剛強壯膽！不要懼怕。", ref:"約書亞記 1:9"},{text:"流淚撒種的，必歡呼收割。", ref:"詩篇 126:5"},{text:"我的恩典夠你用的。", ref:"哥林多後書 12:9"},{text:"壓傷的蘆葦，他不折斷。", ref:"以賽亞書 42:3"}];
         const FATE_CARDS = [
           { type: 'bad', text: "百姓在曠野發怨言，信心動搖。", amount: -30, freeze: false, title: "怨言的網羅" },
           { type: 'bad', text: "製造了金牛犢，得罪了神。", amount: -50, freeze: true, title: "偶像的試探" },
@@ -163,18 +87,12 @@
           { type: 'good', text: "擊敗了來襲的亞瑪力人。", amount: 40, freeze: false, title: "靠主得勝" },
           { type: 'good', text: "雲柱火柱日夜引領。", amount: 60, freeze: false, title: "神的同在" },
         ];
-
         const CHANCE_CARDS = [
-          { type: 'quiz', q: "以色列人繞行耶利哥城幾天後城牆倒塌？", options: ["3天", "7天", "12天"], ans: 1, reward: 50 },
-          { type: 'quiz', q: "誰在約旦河為耶穌施洗？", options: ["彼得", "施洗約翰", "保羅"], ans: 1, reward: 50 },
-          { type: 'quiz', q: "保羅在哪裡看見大光而悔改？", options: ["耶路撒冷", "大馬色路上", "羅馬"], ans: 1, reward: 60 },
-          { type: 'quiz', q: "耶穌的第一個神蹟是什麼？", options: ["水變酒", "五餅二魚", "醫治瞎子"], ans: 0, reward: 40 },
+          { type: 'quiz', q: "以色列人繞耶利哥幾天？", options: ["3天", "7天"], ans: 1, reward: 50 },
+          { type: 'quiz', q: "誰在約旦河施洗？", options: ["彼得", "約翰"], ans: 1, reward: 50 },
           { type: 'event_bad', title: "遇到巨人", text: "看見亞納族人高大，心裡害怕。", amount: -30 },
           { type: 'event_bad', title: "瑪拉苦水", text: "水是苦的，無法飲用。", amount: -20 },
-          { type: 'event_bad', title: "遇到強盜", text: "路途中遭遇危險，損失財物。", amount: -40 },
         ];
-
-        // --- 棋盤設定 ---
         const INITIAL_BOARD_MAP = [
           { id: 0, type: 'start', label: '過約旦河', name: '進迦南', color: 'from-yellow-100 to-yellow-200', icon: <Footprints size={20} /> },
           { id: 1, type: 'city', label: '城池', name: '吉甲', price: 100, rent: 20, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
@@ -197,137 +115,49 @@
           { id: 18, type: 'chance', label: '機會', name: '信心門', color: 'from-yellow-50 to-yellow-100', icon: <HelpCircle size={18} /> },
           { id: 19, type: 'city', label: '城池', name: '示羅', price: 250, rent: 50, owner: null, level: 0, color: 'from-amber-50 to-amber-100', icon: <Tent size={18} /> },
         ];
+        const getGridPosition = (index) => { if (index <= 3) return { x: index, y: 0 }; if (index <= 9) return { x: 3, y: index - 3 }; if (index <= 13) return { x: 3 - (index - 10), y: 7 }; if (index <= 19) return { x: 0, y: 7 - (index - 13) }; return { x: 0, y: 0 }; };
 
-        const getGridPosition = (index) => {
-          if (index <= 3) return { x: index, y: 0 };
-          if (index <= 9) return { x: 3, y: index - 3 };
-          if (index <= 13) return { x: 3 - (index - 10), y: 7 };
-          if (index <= 19) return { x: 0, y: 7 - (index - 13) };
-          return { x: 0, y: 0 };
-        };
-
-        // --- Common Components ---
+        // --- Components ---
         const Dice3D = ({ value, rolling }) => {
-            const getTransform = (val) => {
-                const map = ['rotateX(0deg) rotateY(0deg)', 'rotateX(0deg) rotateY(0deg)', 'rotateY(-90deg)', 'rotateY(180deg)', 'rotateY(90deg)', 'rotateX(-90deg)', 'rotateX(90deg)'];
-                return map[val] || map[1];
-            };
-            return (
-                <div className="dice-scene"><div className={`dice ${rolling ? 'rolling' : ''}`} style={{ transform: rolling ? '' : getTransform(value) }}><div className="dice-face face-1 dots-1"><div className="dot" style={{width:16, height:16, background:'#D32F2F'}}></div></div><div className="dice-face face-2 dots-2"><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-3 dots-3"><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-4 dots-4"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-5 dots-5"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-6 dots-6"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div></div></div>
-            );
+            const getTransform = (val) => { const map = ['rotateX(0) rotateY(0)', 'rotateX(0) rotateY(0)', 'rotateY(-90deg)', 'rotateY(180deg)', 'rotateY(90deg)', 'rotateX(-90deg)', 'rotateX(90deg)']; return map[val] || map[1]; };
+            return (<div className="dice-scene"><div className={`dice ${rolling ? 'rolling' : ''}`} style={{ transform: rolling ? '' : getTransform(value) }}><div className="dice-face face-1 dots-1"><div className="dot" style={{width:16, height:16, background:'#D32F2F'}}></div></div><div className="dice-face face-2 dots-2"><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-3 dots-3"><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-4 dots-4"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-5 dots-5"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div><div className="dice-face face-6 dots-6"><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div><div className="dot"></div></div></div></div>);
         };
-
         const Deck = ({ type, active, onClick }) => {
             const isFate = type === 'fate';
-            const colorClass = isFate ? "bg-[#8E44AD] border-[#6C3483]" : "bg-[#F39C12] border-[#D35400]";
-            const icon = isFate ? <AlertTriangle size={20} className="text-white"/> : <HelpCircle size={20} className="text-white"/>;
-            const label = isFate ? "命運" : "機會";
-            return (
-                <div onClick={active ? onClick : undefined} className={`w-20 h-28 rounded-lg border-2 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 relative ${colorClass} ${active ? 'animate-bounce ring-4 ring-yellow-400 z-20' : 'opacity-80 shadow-deck'}`}>
-                    <div className="absolute inset-1 border border-white/30 border-dashed rounded pointer-events-none"></div><div className="mb-1">{icon}</div><div className="text-white font-black text-sm tracking-widest writing-vertical-rl">{label}</div><div className={`absolute -bottom-1 -right-1 w-full h-full rounded-lg -z-10 ${isFate ? "bg-[#4A235A]" : "bg-[#A04000]"}`}></div>
-                    {active && <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/70 text-white text-[10px] px-2 py-1 rounded animate-pulse whitespace-nowrap">請點擊抽卡</div>}
-                </div>
-            );
+            return (<div onClick={active ? onClick : undefined} className={`w-20 h-28 rounded-lg border-2 flex flex-col items-center justify-center cursor-pointer transition-all duration-300 relative ${isFate ? "bg-[#8E44AD] border-[#6C3483]" : "bg-[#F39C12] border-[#D35400]"} ${active ? 'animate-bounce ring-4 ring-yellow-400 z-20' : 'opacity-80 shadow-deck'}`}><div className="absolute inset-1 border border-white/30 border-dashed rounded pointer-events-none"></div><div className="mb-1">{isFate ? <AlertTriangle size={20} className="text-white"/> : <HelpCircle size={20} className="text-white"/>}</div><div className="text-white font-black text-sm tracking-widest writing-vertical-rl">{isFate?"命運":"機會"}</div><div className={`absolute -bottom-1 -right-1 w-full h-full rounded-lg -z-10 ${isFate ? "bg-[#4A235A]" : "bg-[#A04000]"}`}></div>{active && <div className="absolute -top-10 left-1/2 -translate-x-1/2 bg-black/70 text-white text-[10px] px-2 py-1 rounded animate-pulse whitespace-nowrap">請點擊抽卡</div>}</div>);
         };
-
-        const BackgroundMap = () => (
-             <div className="fixed inset-0 w-full h-full z-[-1] overflow-hidden pointer-events-none"><svg width="100%" height="100%" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5"/><feDiffuseLighting lightingColor="#E6D5B8" surfaceScale="2"><feDistantLight azimuth="45" elevation="60"/></feDiffuseLighting></filter><radialGradient id="vignette" cx="50%" cy="50%" r="70%"><stop offset="50%" stopColor="#8B4513" stopOpacity="0"/><stop offset="100%" stopColor="#3E2723" stopOpacity="0.5"/></radialGradient></defs><rect width="100%" height="100%" fill="#E6D5B8"/><rect width="100%" height="100%" filter="url(#paper-texture)" opacity="0.6"/><path d="M -50 0 L 80 0 Q 60 200 40 400 T -20 800 L -50 800 Z" fill="#87A8B3" opacity="0.4" stroke="#546E7A"/><path d="M 280 150 Q 300 130 320 150 T 280 150" fill="#87A8B3" opacity="0.6"/><path d="M 300 160 Q 290 200 310 250 T 290 350" fill="none" stroke="#546E7A" strokeWidth="2" opacity="0.5"/><path d="M 290 350 Q 270 380 290 420 T 310 380 Q 320 360 290 350" fill="#87A8B3" opacity="0.6"/><path d="M 100 700 L 130 650 L 160 700 L 190 660 L 220 700" fill="none" stroke="#5D4037" strokeWidth="2" strokeLinejoin="round" opacity="0.4"/><path d="M 50 750 C 80 700, 150 720, 200 650 S 100 500, 150 450 S 250 350, 280 200" fill="none" stroke="#8B0000" strokeWidth="2" strokeDasharray="6,4" opacity="0.6"/><rect width="100%" height="100%" fill="url(#vignette)" style={{mixBlendMode: 'multiply'}}/></svg></div>
-        );
-
-        // --- Start Screen ---
-        const StartScreen = ({ onStart }) => (
-            <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden">
-              <BackgroundMap />
-              <div className="z-10 max-w-md w-full bg-[#F3E5AB] p-8 rounded-xl shadow-[0_10px_30px_rgba(62,39,35,0.4)] border-4 border-[#8B4513] relative vintage-border">
-                <div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#8B4513] text-[#F3E5AB] px-4 py-1 text-sm font-bold rounded shadow-md tracking-widest">BIBLE ADVENTURE</div>
-                <h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1>
-                <h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2>
-                <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(20%)'}}>🐏</div></div>
-                
-                {/* 遊戲規則 */}
-                <div className="text-left mb-8 space-y-3 bg-[#E6D5B8] p-4 rounded border border-[#8B4513]/30 shadow-inner">
-                    <h3 className="font-bold text-[#8B4513] mb-3 flex items-center gap-2 border-b border-[#8B4513]/20 pb-2"><Info size={18} /> 遊戲規則</h3>
-                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p className="text-sm font-bold text-[#3E2723]">擲骰子，累積 <span className="text-[#8B0000]">信心值</span>。</p></div>
-                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p className="text-sm font-bold text-[#3E2723]">攻佔城池，建立 <span className="text-[#8B0000]">祭壇</span> 獻祭。</p></div>
-                    <div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</div><p className="text-sm font-bold text-[#3E2723]">遇到黑公羊的營壘，選擇 <span className="text-[#8B0000]">拆毀</span> 或祝福。</p></div>
-                </div>
-
-                <button onClick={onStart} className="w-full bg-[#8B4513] hover:bg-[#5D4037] text-[#F3E5AB] text-xl font-black py-4 rounded shadow-md border-2 border-[#3E2723]"><Sword size={24} className="inline mr-2"/> 開始征戰</button>
-                
-                {/* 底部團隊與連結 */}
-                <div className="mt-8 pt-6 border-t border-[#8B4513]/30">
-                    <p className="text-[#3E2723] font-bold mb-4">耶穌加油站 x 微光新事</p>
-                    <div className="flex justify-center gap-4">
-                        <a href="https://www.facebook.com/profile.php?id=100068500932557" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Facebook size={24} /></a>
-                        <a href="https://www.instagram.com/forever.believe.in.jesus/" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Instagram size={24} /></a>
-                        <a href="https://www.threads.net/@forever.believe.in.jesus" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><AtSign size={24} /></a>
-                        <a href="https://line.me/R/ti/p/@469cjlho" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><MessageCircle size={24} /></a>
-                        <a href="mailto:newthingsinthelittlelight@gmail.com" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Mail size={24} /></a>
-                    </div>
-                </div>
-              </div>
-            </div>
-        );
-
+        const BackgroundMap = () => (<div className="fixed inset-0 w-full h-full z-[-1] overflow-hidden pointer-events-none"><svg width="100%" height="100%" viewBox="0 0 400 800" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg"><defs><filter id="paper-texture"><feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="5"/><feDiffuseLighting lightingColor="#E6D5B8" surfaceScale="2"><feDistantLight azimuth="45" elevation="60"/></feDiffuseLighting></filter><radialGradient id="vignette" cx="50%" cy="50%" r="70%"><stop offset="50%" stopColor="#8B4513" stopOpacity="0"/><stop offset="100%" stopColor="#3E2723" stopOpacity="0.5"/></radialGradient></defs><rect width="100%" height="100%" fill="#E6D5B8"/><rect width="100%" height="100%" filter="url(#paper-texture)" opacity="0.6"/><path d="M -50 0 L 80 0 Q 60 200 40 400 T -20 800 L -50 800 Z" fill="#87A8B3" opacity="0.4" stroke="#546E7A"/><path d="M 280 150 Q 300 130 320 150 T 280 150" fill="#87A8B3" opacity="0.6"/><path d="M 300 160 Q 290 200 310 250 T 290 350" fill="none" stroke="#546E7A" strokeWidth="2" opacity="0.5"/><path d="M 290 350 Q 270 380 290 420 T 310 380 Q 320 360 290 350" fill="#87A8B3" opacity="0.6"/><path d="M 100 700 L 130 650 L 160 700 L 190 660 L 220 700" fill="none" stroke="#5D4037" strokeWidth="2" strokeLinejoin="round" opacity="0.4"/><path d="M 50 750 C 80 700, 150 720, 200 650 S 100 500, 150 450 S 250 350, 280 200" fill="none" stroke="#8B0000" strokeWidth="2" strokeDasharray="6,4" opacity="0.6"/><rect width="100%" height="100%" fill="url(#vignette)" style={{mixBlendMode: 'multiply'}}/></svg></div>);
+        const StartScreen = ({ onStart }) => (<div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden"><BackgroundMap /><div className="z-10 max-w-md w-full bg-[#F3E5AB] p-8 rounded-xl shadow-[0_10px_30px_rgba(62,39,35,0.4)] border-4 border-[#8B4513] relative vintage-border"><div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#8B4513] text-[#F3E5AB] px-4 py-1 text-sm font-bold rounded shadow-md tracking-widest">BIBLE ADVENTURE</div><h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1><h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2><div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(20%)'}}>🐏</div></div><div className="text-left mb-8 space-y-3 bg-[#E6D5B8] p-4 rounded border border-[#8B4513]/30 shadow-inner"><h3 className="font-bold text-[#8B4513] mb-3 flex items-center gap-2 border-b border-[#8B4513]/20 pb-2"><Info size={18} /> 遊戲規則</h3><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p className="text-sm font-bold text-[#3E2723]">擲骰子，累積 <span className="text-[#8B0000]">信心值</span>。</p></div><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p className="text-sm font-bold text-[#3E2723]">攻佔城池，建立 <span className="text-[#8B0000]">祭壇</span> 獻祭。</p></div><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</div><p className="text-sm font-bold text-[#3E2723]">遇到黑公羊的營壘，選擇 <span className="text-[#8B0000]">拆毀</span> 或祝福。</p></div></div><button onClick={onStart} className="w-full bg-[#8B4513] hover:bg-[#5D4037] text-[#F3E5AB] text-xl font-black py-4 rounded shadow-md border-2 border-[#3E2723]"><Sword size={24} className="inline mr-2"/> 開始征戰</button><div className="mt-8 pt-6 border-t border-[#8B4513]/30"><p className="text-[#3E2723] font-bold mb-4">耶穌加油站 x 微光新事</p><div className="flex justify-center gap-4"><a href="https://www.facebook.com/profile.php?id=100068500932557" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Facebook size={24} /></a><a href="https://www.instagram.com/forever.believe.in.jesus/" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Instagram size={24} /></a><a href="https://www.threads.net/@forever.believe.in.jesus" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><AtSign size={24} /></a><a href="https://line.me/R/ti/p/@469cjlho" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><MessageCircle size={24} /></a><a href="mailto:newthingsinthelittlelight@gmail.com" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Mail size={24} /></a></div></div></div></div>);
         const GameButton = ({ onClick, disabled, color = "blue", icon: Icon, children }) => {
             const colors = { blue: "bg-blue-500", amber: "bg-amber-500", indigo: "bg-indigo-500", red: "bg-red-500", purple: "bg-purple-500", gray: "bg-gray-500", orange: "bg-orange-500", cyan: "bg-cyan-500", green: "bg-green-500" };
             return <button onClick={onClick} disabled={disabled} className={`w-full py-3.5 rounded-lg font-bold transition-all flex items-center justify-center gap-2 ${disabled ? "bg-gray-300 cursor-not-allowed" : `${colors[color]} text-white shadow-md active:scale-95`}`}>{Icon && <Icon size={20}/>} {children}</button>;
         };
-
-        const CardFlip = ({ frontTitle, frontColor, backContent, icon }) => {
+        const CardFlip = ({ frontTitle, frontColor, backContent, icon, textColor="text-[#3E2723]" }) => {
             const [isFlipped, setIsFlipped] = useState(false);
-            return (
-                <div className="relative w-full h-[450px] perspective-1000 cursor-pointer group" onClick={() => !isFlipped && setIsFlipped(true)}>
-                  <div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}>
-                    <div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}>
-                      <div className="border-4 border-dashed border-[#3E2723]/30 w-[90%] h-[90%] absolute rounded-lg pointer-events-none"></div>
-                      <div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6 shadow-md">{icon}</div>
-                      <h3 className="text-3xl font-black text-[#3E2723] tracking-[0.2em] uppercase font-serif drop-shadow-sm">{frontTitle}</h3>
-                      <div className="absolute bottom-12 text-[#3E2723]/60 text-sm font-bold animate-pulse">點擊翻開聖諭</div>
-                    </div>
-                    <div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/paper.png')]">{backContent}</div>
-                  </div>
-                </div>
-            );
+            return (<div className="relative w-full h-[450px] perspective-1000 cursor-pointer group" onClick={() => !isFlipped && setIsFlipped(true)}><div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}><div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}><div className="border-4 border-dashed border-[#3E2723]/30 w-[90%] h-[90%] absolute rounded-lg pointer-events-none"></div><div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6 shadow-md">{icon}</div><h3 className={`text-3xl font-black ${textColor} tracking-[0.2em] uppercase font-serif drop-shadow-sm`}>{frontTitle}</h3><div className={`absolute bottom-12 ${textColor} opacity-80 text-sm font-bold animate-pulse`}>點擊翻開聖諭</div></div><div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/paper.png')]">{backContent}</div></div></div>);
         };
-
         const FateEvent = ({ onComplete }) => {
             const [card] = useState(() => FATE_CARDS[Math.floor(Math.random() * FATE_CARDS.length)]);
             const isGood = card.type === 'good';
-            return <CardFlip frontTitle="命運牌" frontColor="from-purple-500 to-indigo-600" icon={<AlertTriangle size={64} />} backContent={
-              <div className="w-full text-center h-full flex flex-col justify-center">
-                <div className={`mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center border-4 ${isGood ? 'bg-[#E8F5E9] border-green-600 text-green-600' : 'bg-[#FFEBEE] border-red-600 text-red-600'}`}>{isGood ? <Sun size={40}/> : <CloudRain size={40}/>}</div>
-                <h3 className="text-2xl font-black mb-4 text-[#3E2723]">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-8">{card.text}</p>
-                <div className="mb-8"><span className={`text-xl font-black px-4 py-2 rounded ${isGood ? 'bg-green-100 text-green-800' : 'bg-red-100 text-red-800'}`}>信心 {card.amount > 0 ? '+' : ''}{card.amount}</span>{card.freeze && <div className="text-red-600 text-sm mt-2 font-bold flex justify-center items-center gap-1"><PauseCircle size={14}/> 暫停一回合</div>}</div>
-                <GameButton onClick={() => onComplete(0, card.amount, card.freeze)} color={isGood ? "green" : "red"}>{isGood ? "哈利路亞" : "悔改求主"}</GameButton>
-              </div>
-            } />;
+            return <CardFlip frontTitle="命運牌" frontColor="from-purple-500 to-indigo-600" textColor="text-white" icon={<AlertTriangle size={64} />} backContent={<div className="w-full text-center h-full flex flex-col justify-center"><div className={`mb-6 p-4 rounded-full w-20 h-20 mx-auto flex items-center justify-center border-4 ${isGood?'bg-[#E8F5E9] border-green-600 text-green-600':'bg-[#FFEBEE] border-red-600 text-red-600'}`}>{isGood?<Sun size={40}/>:<CloudRain size={40}/>}</div><h3 className="text-2xl font-black mb-4 text-[#3E2723]">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-8">{card.text}</p><div className="mb-8"><span className={`text-xl font-black px-4 py-2 rounded ${isGood?'bg-green-100 text-green-800':'bg-red-100 text-red-800'}`}>信心 {card.amount>0?'+':''}{card.amount}</span>{card.freeze&&<div className="text-red-600 text-sm mt-2 font-bold flex justify-center items-center gap-1"><PauseCircle size={14}/> 暫停一回合</div>}</div><GameButton onClick={()=>onComplete(0,card.amount,card.freeze)} color={isGood?"green":"red"}>{isGood?"哈利路亞":"悔改求主"}</GameButton></div>} />;
         };
-
         const ChanceEvent = ({ onComplete }) => {
             const [card] = useState(() => CHANCE_CARDS[Math.floor(Math.random() * CHANCE_CARDS.length)]);
             const [quizStatus, setQuizStatus] = useState('ask');
             const handleAns = (idx) => { if (idx === card.ans) { setQuizStatus('correct'); setTimeout(() => onComplete(20, card.reward), 1500); } else { setQuizStatus('wrong'); setTimeout(() => onComplete(0, 0, true), 1500); } };
-            const content = card.type === 'quiz' ? (
-                <div className="w-full text-center"><h3 className="text-2xl font-black text-[#8B4513] mb-6">聖經冷知識</h3>
-                {quizStatus === 'ask' && (<><p className="text-[#3E2723] font-bold text-lg mb-6">{card.q}</p><div className="space-y-3">{card.options.map((opt, idx) => <button key={idx} onClick={() => handleAns(idx)} className="w-full bg-[#FFF3E0] text-[#5D4037] border-2 border-[#D7CCC8] py-3 rounded-lg font-bold hover:bg-[#FFE0B2]">{opt}</button>)}</div></>)}
-                {quizStatus === 'correct' && <div className="py-10 animate-bounce text-green-700"><Check size={40} className="mx-auto"/><p className="text-2xl font-black">答對了！</p><p className="font-bold text-green-600">+{card.reward} 信心</p></div>}
-                {quizStatus === 'wrong' && <div className="py-10 animate-shake text-red-700"><X size={40} className="mx-auto"/><p className="text-2xl font-black">答錯了...</p><p className="font-bold text-red-500">暫停一回</p></div>}
-                </div>
-            ) : (<div className="w-full text-center h-full flex flex-col justify-center"><CloudRain size={40} className="mx-auto text-gray-500 mb-4"/><h3 className="text-2xl font-black text-[#3E2723] mb-4">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-6">{card.text}</p><div className="inline-block bg-red-50 border border-red-200 px-4 py-2 rounded-lg mb-8"><p className="text-red-800 font-black">信心值 {card.amount}</p></div><GameButton onClick={() => onComplete(0, card.amount)} color="gray">接受挑戰</GameButton></div>);
+            const content = card.type === 'quiz' ? (<div className="w-full text-center"><h3 className="text-2xl font-black text-[#8B4513] mb-6">聖經冷知識</h3>{quizStatus==='ask'&&(<><p className="text-[#3E2723] font-bold text-lg mb-6">{card.q}</p><div className="space-y-3">{card.options.map((opt,i)=><button key={i} onClick={()=>handleAns(i)} className="w-full bg-[#FFF3E0] text-[#5D4037] border-2 border-[#D7CCC8] py-3 rounded-lg font-bold hover:bg-[#FFE0B2]">{opt}</button>)}</div></>)}{quizStatus==='correct'&&<div className="py-10 animate-bounce text-green-700"><Check size={40} className="mx-auto"/><p className="text-2xl font-black">答對了！</p><p className="font-bold text-green-600">+{card.reward} 信心</p></div>}{quizStatus==='wrong'&&<div className="py-10 animate-shake text-red-700"><X size={40} className="mx-auto"/><p className="text-2xl font-black">答錯了...</p><p className="font-bold text-red-500">暫停一回</p></div>}</div>) : (<div className="w-full text-center h-full flex flex-col justify-center"><CloudRain size={40} className="mx-auto text-gray-500 mb-4"/><h3 className="text-2xl font-black text-[#3E2723] mb-4">{card.title}</h3><p className="text-lg font-bold text-[#5D4037] mb-6">{card.text}</p><div className="inline-block bg-red-50 border border-red-200 px-4 py-2 rounded-lg mb-8"><p className="text-red-800 font-black">信心值 {card.amount}</p></div><GameButton onClick={()=>onComplete(0,card.amount)} color="gray">接受挑戰</GameButton></div>);
             return <CardFlip frontTitle="機會牌" frontColor="bg-[#FFE082]" icon={<HelpCircle size={64} />} backContent={content} />;
         };
 
         const EventModal = ({ type, tileData, onClose, onComplete, coins, isOwner, onBuy, onUpgrade, onDestroy }) => {
             const CloseButton = () => <button onClick={onClose} className="absolute top-4 right-4 bg-white/50 hover:bg-white text-gray-600 p-2 rounded-full shadow-sm transition-all z-50 border border-white/60"><X size={20} /></button>;
             const BibleReader = () => {
-                const [bookName] = useState(BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]);
-                const [chapter] = useState(Math.floor(Math.random() * 5) + 1);
+                const [bookName] = useState(() => BIBLE_BOOKS[Math.floor(Math.random() * BIBLE_BOOKS.length)]);
+                const [chapter] = useState(() => Math.floor(Math.random() * 5) + 1);
                 const [content, setContent] = useState(null);
                 const [loading, setLoading] = useState(true);
-                const [usingFallback, setUsingFallback] = useState(false);
-                useEffect(() => { const f=async()=>{setLoading(true);try{const r=await fetch(`https://bible-api.com/${BIBLE_BOOKS_MAPPING[bookName]}+${chapter}?translation=cuv`);if(!r.ok)throw new Error();const d=await r.json();setContent(d.verses);}catch{setUsingFallback(true);setContent(FALLBACK_SCRIPTURE);}setLoading(false);};f();},[]);
-                return (<div className="bg-[#FFF8E7] rounded-3xl shadow-2xl border-8 border-[#8B4513] flex flex-col h-[500px] overflow-hidden relative"><CloseButton/><div className="bg-[#F3E5AB] p-4 border-b-2 border-[#D7CCC8] mt-4"><h3 className="text-xl font-black text-[#5D4037] text-center flex justify-center gap-2"><BookOpen/> 每日靈糧</h3><p className="text-center text-[#8B4513] font-bold text-sm">{usingFallback?"詩篇 23":`${bookName} ${chapter}`}</p></div><div className="flex-1 overflow-y-auto p-6 custom-scrollbar">{loading?<div className="text-center mt-10"><Loader className="animate-spin inline"/></div>:<div className="space-y-4">{content.map((v,i)=><div key={i} className="flex gap-2 text-sm"><span className="font-bold text-[#8B4513]">{v.verse}</span><span>{v.text}</span></div>)}</div>}</div><div className="p-4 bg-[#F3E5AB] space-y-2"><a href={`https://www.biblegateway.com/passage/?search=${BIBLE_BOOKS_MAPPING[bookName]}+${chapter}&version=CUV`} target="_blank" className="block w-full py-2 bg-white border-2 border-[#8B4513] text-[#8B4513] text-center font-bold rounded-lg hover:bg-[#EFEBE9] flex items-center justify-center gap-2"><ExternalLink size={16}/> 前往網站閱讀</a><GameButton onClick={()=>onComplete(30,80)} disabled={loading} color="amber" icon={Check}>{loading?"讀取中...":"我讀完了 (+80 信心)"}</GameButton></div></div>);
+                useEffect(() => { const f=async()=>{setLoading(true); setContent(BIBLE_DB[bookName] || FALLBACK_SCRIPTURE); setLoading(false);}; f();}, []);
+                return (<div className="bg-[#FFF8E7] rounded-3xl shadow-2xl border-8 border-[#8B4513] flex flex-col h-[500px] overflow-hidden relative"><CloseButton/><div className="bg-[#F3E5AB] p-4 border-b-2 border-[#D7CCC8] mt-4"><h3 className="text-xl font-black text-[#5D4037] text-center flex justify-center gap-2"><BookOpen/> 每日靈糧</h3><p className="text-center text-[#8B4513] font-bold text-sm">{bookName} 第 {chapter} 章</p></div><div className="flex-1 overflow-y-auto p-6 custom-scrollbar">{loading?<div className="text-center mt-10"><Loader className="animate-spin inline"/></div>:<div className="space-y-4">{content.map((v,i)=><div key={i} className="flex gap-2 text-sm"><span className="font-bold text-[#8B4513]">{v.verse}</span><span>{v.text}</span></div>)}</div>}</div><div className="p-4 bg-[#F3E5AB] space-y-2"><GameButton onClick={()=>onComplete(30,80)} disabled={loading} color="amber" icon={Check}>{loading?"讀取中...":"我讀完了 (+80 信心)"}</GameButton></div></div>);
             };
             const PropertyAction = () => {
                 if (tileData.type !== 'city') return null;
@@ -366,21 +196,18 @@
 
           const startGame = () => { setGameState('playing'); setFaith(1000); setCpuFaith(1000); setPlayerPos(0); setCpuPos(0); setBoard(INITIAL_BOARD_MAP); setLevel(1); };
           const notify = (text, color="bg-amber-500") => { setNotification({ text, color }); setTimeout(() => setNotification(null), 3000); };
-          
           const handleLandEvent = (pos, who) => {
             const tile = board[pos];
             if (who === 'player' && (tile.type === 'fate' || tile.type === 'chance')) { setWaitingForDraw(tile.type); return; }
             if (tile.type !== 'start') { setTimeout(() => setActiveModal(tile.type), 500); } else { setTurn('cpu'); }
           };
-          
           const rollDice = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
             if (isFrozen) { notify("仍在曠野省思中... 暫停一回", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
             const moveInterval = setInterval(() => { setPlayerPos(prev => (prev + 1) % board.length); }, 200);
           };
-          
-           const triggerRoll = () => {
+          const triggerRoll = () => {
             if (isMoving || activeModal || turn !== 'player' || waitingForDraw) return;
             if (isFrozen) { notify("仍在曠野省思中...", "bg-gray-500"); setIsMoving(true); setTimeout(() => { setIsFrozen(false); setIsMoving(false); setTurn('cpu'); }, 1500); return; }
             const val = Math.floor(Math.random() * 6) + 1; setDiceValue(val); setIsMoving(true);
@@ -392,7 +219,6 @@
                if (count === val) { clearInterval(interval); setIsMoving(false); handleLandEvent(current, 'player'); }
             }, 200);
            };
-           
            useEffect(() => {
              if (gameState === 'playing' && turn === 'cpu') {
                 setTimeout(() => {
@@ -406,7 +232,6 @@
                 }, 1000);
              }
            }, [turn, gameState]);
-           
            const handleCpuLandEvent = (pos) => {
               const tile = board[pos];
               if (tile.owner === 'player') {
@@ -418,15 +243,11 @@
               }
               setTimeout(() => setTurn('player'), 1500);
            };
-           
-           // 修正函式名稱與參數
            const onModalComplete = (xpG, faithChange, freeze = false) => {
               if(xpG) { const n = xp+xpG; if(n>=level*100) setLevel(l=>l+1); }
               if(faithChange) setFaith(f=>Math.max(0, f+faithChange));
-              if(freeze) setIsFrozen(true); 
-              setActiveModal(null); setTurn('cpu');
+              if(freeze) setIsFrozen(true); setActiveModal(null); setTurn('cpu');
            };
-           
            const handleBuy = (cost) => { const b=[...board]; b[playerPos].owner='player'; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
            const handleUpgrade = (cost) => { const b=[...board]; b[playerPos].level+=1; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
            const handleDestroy = (cost, claim) => { const b=[...board]; b[playerPos].owner=claim?'player':null; b[playerPos].level=0; setBoard(b); setFaith(f=>f-cost); setActiveModal(null); setTurn('cpu'); };
@@ -436,7 +257,6 @@
            return (
             <div className="min-h-screen flex flex-col items-center justify-center p-2 relative overflow-hidden">
                <BackgroundMap />
-               
                <div className="w-full max-w-md fixed top-4 z-30 px-4">
                   <div className="glass-panel rounded-xl p-3 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md">
                      <div className="flex justify-between items-center mb-2 px-2"><div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span><div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level}</div></div></div>
@@ -446,9 +266,7 @@
                      </div>
                   </div>
                </div>
-               
                {notification && <div className={`fixed top-36 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
-               
                <div className="relative w-full max-w-md aspect-[9/16] mt-32 mb-4 p-2 scale-95">
                   <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
                      <div className="absolute top-[12.5%] left-[25%] w-[50%] h-[75%] flex flex-col items-center justify-between py-6 z-20 pointer-events-none">
@@ -488,7 +306,7 @@
                      })}
                   </div>
                </div>
-               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm animate-hop"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
+               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
             </div>
            );
         };
