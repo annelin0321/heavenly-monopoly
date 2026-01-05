@@ -128,14 +128,39 @@
         import { createRoot } from 'react-dom/client';
         import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail, Lock } from 'lucide-react';
 
-        // --- 內建聖經資料庫 ---
+        // --- 內建聖經資料庫 (擴充至7節左右) ---
         const BIBLE_DB = {
-            "創世記": [ { verse: 1, text: "起初，神創造天地。" }, { verse: 2, text: "地是空虛混沌，淵面黑暗；神的靈運行在水面上。" } ],
-            "詩篇": [ { verse: 1, text: "耶和華是我的牧者，我必不致缺乏。" }, { verse: 2, text: "他使我躺臥在青草地上，領我在可安歇的水邊。" } ],
-            "馬太福音": [ { verse: 3, text: "虛心的人有福了！因為天國是他們的。" }, { verse: 4, text: "哀慟的人有福了！因為他們必得安慰。" } ]
+            "創世記": [ 
+                { verse: 1, text: "起初，神創造天地。" }, 
+                { verse: 2, text: "地是空虛混沌，淵面黑暗；神的靈運行在水面上。" },
+                { verse: 3, text: "神說：「要有光」，就有了光。" }, 
+                { verse: 4, text: "神看光是好的，就把光暗分開了。" },
+                { verse: 5, text: "神稱光為「晝」，稱暗為「夜」。有晚上，有早晨，這是頭一日。" },
+                { verse: 6, text: "神說：「諸水之間要有空氣，將水群分為上下。」" },
+                { verse: 7, text: "神就造出空氣，將空氣以下的水、空氣以上的水分開了。事就這樣成了。" }
+            ],
+            "詩篇": [ 
+                { verse: 1, text: "耶和華是我的牧者，我必不致缺乏。" }, 
+                { verse: 2, text: "他使我躺臥在青草地上，領我在可安歇的水邊。" },
+                { verse: 3, text: "他使我的靈魂甦醒，為自己的名引導我走義路。" }, 
+                { verse: 4, text: "我雖然行過死蔭的幽谷，也不怕遭害，因為你與我同在；你的杖，你的竿，都安慰我。" },
+                { verse: 5, text: "在我敵人面前，你為我擺設筵席；你用油膏了我的頭，使我的福杯滿溢。" },
+                { verse: 6, text: "我一生一世必有恩惠慈愛隨著我；我且要住在耶和華的殿中，直到永遠。" }
+            ],
+            "馬太福音": [ 
+                { verse: 3, text: "虛心的人有福了！因為天國是他們的。" }, 
+                { verse: 4, text: "哀慟的人有福了！因為他們必得安慰。" },
+                { verse: 5, text: "溫柔的人有福了！因為他們必承受地土。" }, 
+                { verse: 6, text: "飢渴慕義的人有福了！因為他們必得飽足。" },
+                { verse: 7, text: "憐恤人的人有福了！因為他們必蒙憐恤。" },
+                { verse: 8, text: "清心的人有福了！因為他們必得見神。" },
+                { verse: 9, text: "使人和睦的人有福了！因為他們必稱為神的兒子。" }
+            ]
         };
         const BIBLE_BOOKS = Object.keys(BIBLE_DB);
-        const FALLBACK_SCRIPTURE = [{verse:1,text:"耶和華是我的牧者，我必不致缺乏。"},{verse:2,text:"他使我躺臥在青草地上，領我在可安歇的水邊。"}];
+        // Fallback 也同步更新
+        const FALLBACK_SCRIPTURE = BIBLE_DB["詩篇"];
+        
         const BIBLE_BOOKS_MAPPING = {"創世記":"Genesis","出埃及記":"Exodus","約書亞記":"Joshua","詩篇":"Psalms","箴言":"Proverbs","馬太福音":"Matthew","約翰福音":"John","羅馬書":"Romans","啟示錄":"Revelation"};
 
         // --- 資料設定 ---
@@ -197,7 +222,7 @@
         };
         const CardFlip = ({ frontTitle, frontColor, backContent, icon, textColor="text-[#3E2723]" }) => {
             const [isFlipped, setIsFlipped] = useState(false);
-            return (<div className="relative w-full h-[450px] perspective-1000 cursor-pointer group" onClick={() => !isFlipped && setIsFlipped(true)}><div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}><div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}><div className="border-4 border-dashed border-[#3E2723]/30 w-[90%] h-[90%] absolute rounded-lg pointer-events-none"></div><div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6 shadow-md">{icon}</div><h3 className={`text-3xl font-black ${textColor} tracking-[0.2em] uppercase font-serif drop-shadow-sm`}>{frontTitle}</h3><div className={`absolute bottom-12 ${textColor} opacity-80 text-sm font-bold animate-pulse`}>點擊翻開聖諭</div></div><div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/paper.png')]">{backContent}</div></div></div>);
+            return (<div className="relative w-full h-[450px] perspective-1000 cursor-pointer group" onClick={() => !isFlipped && setIsFlipped(true)}><div className={`relative w-full h-full transition-all duration-700 transform-style-3d ${isFlipped ? 'rotate-y-180' : ''}`}><div className={`absolute w-full h-full bg-gradient-to-br ${frontColor} rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center backface-hidden border-8 border-[#3E2723]`}><div className="border-4 border-dashed border-[#3E2723]/30 w-[90%] h-[90%] absolute rounded-lg pointer-events-none"></div><div className="bg-[#3E2723] p-6 rounded-full text-[#F3E5AB] mb-6 shadow-md">{icon}</div><h3 className={`text-3xl font-black ${textColor} tracking-[0.2em] uppercase font-serif drop-shadow-sm`}>{frontTitle}</h3><div className={`absolute bottom-12 ${textColor} opacity-80 text-sm font-bold animate-pulse`}>點擊翻開</div></div><div className="absolute w-full h-full bg-[#F3E5AB] rounded-xl shadow-[0_10px_20px_rgba(0,0,0,0.3)] flex flex-col items-center justify-center p-8 backface-hidden rotate-y-180 border-8 border-[#8B4513] overflow-y-auto bg-[url('https://www.transparenttextures.com/patterns/paper.png')]">{backContent}</div></div></div>);
         };
         const FateEvent = ({ onComplete }) => {
             const [card] = useState(() => FATE_CARDS[Math.floor(Math.random() * FATE_CARDS.length)]);
@@ -258,8 +283,22 @@
                 useEffect(() => { 
                     const f = async () => {
                         setLoading(true); 
-                        // 優先使用內建資料庫，如果沒有則使用 Fallback
-                        setContent(BIBLE_DB[bookName] || FALLBACK_SCRIPTURE); 
+                        // 修正：如果 API 失敗或為了確保顯示，優先使用 BIBLE_DB 中的資料，若無則請求 API (或直接用 Fallback)
+                        // 這裡為了演示穩定性，我們模擬 API 請求並使用 BIBLE_DB
+                        try {
+                            // 模擬網路延遲
+                            await new Promise(r => setTimeout(r, 500));
+                            if (BIBLE_DB[bookName]) {
+                                setContent(BIBLE_DB[bookName]);
+                            } else {
+                                const res = await fetch(`https://bible-api.com/${BIBLE_BOOKS_MAPPING[bookName]}+${chapter}?translation=cuv`);
+                                if (!res.ok) throw new Error("API Error");
+                                const data = await res.json();
+                                setContent(data.verses.slice(0, 7)); // 限制7節
+                            }
+                        } catch (err) {
+                            setContent(FALLBACK_SCRIPTURE);
+                        }
                         setLoading(false);
                     }; 
                     f();
@@ -373,6 +412,7 @@
            return (
             <div className="min-h-screen flex flex-col items-center justify-center p-2 relative overflow-hidden">
                <BackgroundMap />
+               
                <div className="w-full max-w-md fixed top-4 z-30 px-4">
                   <div className="glass-panel rounded-xl p-3 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md">
                      <div className="flex justify-between items-center mb-2 px-2"><div className="flex items-center gap-2"><span className="font-black text-[#5D4037] tracking-widest text-lg font-serif">CANAAN</span><div className="px-3 py-0.5 bg-[#8B4513] text-[#F3E5AB] text-[10px] font-bold rounded shadow-sm border border-[#5D4037]">Lv.{level}</div></div></div>
@@ -428,7 +468,7 @@
                      })}
                   </div>
                </div>
-               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm animate-hop"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
+               {activeModal && (<div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#3E2723]/60 backdrop-blur-sm"><div className="w-full max-w-sm"><EventModal type={activeModal} tileData={board[playerPos]} coins={faith} isOwner={board[playerPos].owner === 'player'} isFrozen={isFrozen} onClose={() => { setActiveModal(null); setTurn('cpu'); }} onComplete={onModalComplete} onBuy={handleBuy} onUpgrade={handleUpgrade} onDestroy={handleDestroy} /></div></div>)}
             </div>
            );
         };
