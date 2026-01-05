@@ -98,7 +98,6 @@
             display: flex; align-items: center; justify-content: center;
         }
         .dot { width: 10px; height: 10px; background: #333; border-radius: 50%; box-shadow: inset 1px 1px 2px rgba(0,0,0,0.5); }
-        /* Faces positioning */
         .face-1 { transform: rotateY(0deg) translateZ(30px); }
         .face-2 { transform: rotateY(90deg) translateZ(30px); }
         .face-3 { transform: rotateY(180deg) translateZ(30px); }
@@ -106,7 +105,6 @@
         .face-5 { transform: rotateX(90deg) translateZ(30px); }
         .face-6 { transform: rotateX(-90deg) translateZ(30px); }
         
-        /* Layout for dots */
         .dots-1 { justify-content: center; }
         .dots-2 { justify-content: space-between; padding: 10px; }
         .dots-2 .dot:nth-child(2) { align-self: flex-end; }
@@ -130,7 +128,7 @@
         import { createRoot } from 'react-dom/client';
         import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
 
-        // --- 資料庫 (保持不變) ---
+        // --- 資料庫 ---
         const BLESSING_VERSES = [
           { text: "你當剛強壯膽！不要懼怕，也不要驚惶。", ref: "約書亞記 1:9" },
           { text: "流淚撒種的，必歡呼收割。", ref: "詩篇 126:5" },
@@ -431,8 +429,8 @@
                      </div>
                   </div>
                </div>
-               {notification && <div className={`fixed top-40 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
-               <div className="relative w-full max-w-md aspect-[9/16] mt-40 mb-4 p-2 scale-95">
+               {notification && <div className={`fixed top-36 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
+               <div className="relative w-full max-w-md aspect-[9/16] mt-32 mb-4 p-2 scale-95">
                   <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
                      <div className="absolute top-[12.5%] left-[25%] w-[50%] h-[75%] flex flex-col items-center justify-between py-6 z-20 pointer-events-none">
                         <div className="flex justify-between w-full px-2 pointer-events-auto">
