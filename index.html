@@ -130,7 +130,7 @@
         import { createRoot } from 'react-dom/client';
         import { BookOpen, Heart, Star, MessageCircle, RefreshCw, Check, X, Dices, AlertCircle, PauseCircle, Home, MapPin, Sword, Cross, Scroll, Tent, Footprints, Loader, HelpCircle, AlertTriangle, Play, Info, Send, Hammer, Castle, Flag, WifiOff, Sun, CloudRain, Flame, ExternalLink, Pointer, Facebook, Instagram, AtSign, Mail } from 'lucide-react';
 
-        // --- 資料庫 ---
+        // --- 資料庫 (保持不變) ---
         const BLESSING_VERSES = [
           { text: "你當剛強壯膽！不要懼怕，也不要驚惶。", ref: "約書亞記 1:9" },
           { text: "流淚撒種的，必歡呼收割。", ref: "詩篇 126:5" },
@@ -326,8 +326,8 @@
             };
             const PropertyAction = () => {
                 if (tileData.type !== 'city') return null;
-                if (isOwner) { const cost=Math.floor(tileData.price*0.6); const isFirst=tileData.level===0; return (<div className="mt-4 border-t-2 border-[#D7CCC8] pt-4"><p className="text-sm font-bold text-center mb-2">屬地 Lv.{tileData.level}</p><GameButton onClick={()=>onUpgrade(cost)} disabled={coins<cost} color="amber" icon={isFirst?Home:Flame}>{isFirst?`建立祭壇 (-${cost})`:`獻祭 (-${cost})`}</GameButton><p className="text-[10px] text-amber-600 text-center mt-2 font-bold">{isFirst ? "建立祭壇可保護產業不被拆毀！" : "獻祭次數越多，過路費越高！"}</p></div>); }
-                if (!tileData.owner) return (<div className="mt-4 border-t-2 border-[#D7CCC8] pt-4"><p className="text-sm text-center text-[#5D4037] mb-3 font-bold">此地無人看守，是否得地為業？</p><GameButton onClick={()=>onBuy(tileData.price)} disabled={coins<tileData.price} color="indigo" icon={Sword}>攻佔 (-{tileData.price})</GameButton></div>);
+                if (isOwner) { const cost=Math.floor(tileData.price*0.6); const isFirst=tileData.level===0; return (<div className="mt-4 border-t-2 border-[#D7CCC8] pt-4"><p className="text-sm font-bold text-center mb-2">屬地 Lv.{tileData.level}</p><GameButton onClick={()=>onUpgrade(cost)} disabled={coins<cost} color="amber" icon={isFirst?Home:Flame}>{isFirst?`建立祭壇 (-${cost})`:`獻祭 (-${cost})`}</GameButton></div>); }
+                if (!tileData.owner) return (<div className="mt-4 border-t-2 border-[#D7CCC8] pt-4"><GameButton onClick={()=>onBuy(tileData.price)} disabled={coins<tileData.price} color="indigo" icon={Sword}>攻佔 (-{tileData.price})</GameButton></div>);
                 if (tileData.owner==='cpu') { const rent=tileData.rent*(tileData.level+1); const destroy=tileData.price; const claim=destroy+tileData.price; return (<div className="mt-4 bg-[#FFEBEE] p-3 rounded border border-red-200"><p className="text-center text-red-600 font-bold mb-2">黑公羊營壘</p><button onClick={()=>onComplete(0,-rent)} className="w-full py-2 bg-white border border-red-300 rounded text-red-600 font-bold mb-2">祝福 (-{rent})</button>{tileData.level===0?<><GameButton onClick={()=>onDestroy(destroy,false)} disabled={coins<destroy} color="red" icon={Hammer}>拆毀 (-{destroy})</GameButton><div className="mt-1"><GameButton onClick={()=>onDestroy(claim,true)} disabled={coins<claim} color="indigo" icon={Sword}>拆毀並建立 (-{claim})</GameButton></div></>:<p className="text-center text-xs text-red-400">對方已建祭壇，無法拆毀</p>}</div>); }
             };
             if (type==='event_jesus') return (<div className="bg-[#FFF8E7] p-8 rounded-3xl border-4 border-[#87CEEB] text-center relative"><CloseButton/><h3 className="text-2xl font-black text-[#0097A7]">✝️ 遇見耶穌</h3><p className="my-4">領受屬天的祝福...</p><GameButton onClick={()=>onComplete(20,100)} color="cyan">領受 (+100)</GameButton></div>);
@@ -431,8 +431,8 @@
                      </div>
                   </div>
                </div>
-               {notification && <div className={`fixed top-44 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
-               <div className="relative w-full max-w-md aspect-[9/16] mt-48 mb-4 p-2 scale-95">
+               {notification && <div className={`fixed top-40 z-50 px-6 py-3 rounded-lg text-[#F3E5AB] font-bold shadow-[0_4px_0_#3E2723] animate-bounce text-center backdrop-blur-md border-2 border-[#5D4037] ${notification.color === 'bg-red-500' ? 'bg-[#C62828]' : 'bg-[#EF6C00]'}`}>{notification.text}</div>}
+               <div className="relative w-full max-w-md aspect-[9/16] mt-40 mb-4 p-2 scale-95">
                   <div className="w-full h-full bg-[#E6D5B8]/80 rounded-[1.5rem] shadow-[inset_0_0_60px_rgba(62,39,35,0.2)] relative border-8 border-[#8D6E63] outline outline-4 outline-[#5D4037] backdrop-blur-sm overflow-hidden">
                      <div className="absolute top-[12.5%] left-[25%] w-[50%] h-[75%] flex flex-col items-center justify-between py-6 z-20 pointer-events-none">
                         <div className="flex justify-between w-full px-2 pointer-events-auto">
