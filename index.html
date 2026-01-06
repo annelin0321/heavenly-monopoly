@@ -5,6 +5,40 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>天國大富翁：應許之地</title>
     
+    <!-- 動態生成小羊富翁圖示 (Script) -->
+    <script>
+        (function() {
+            var canvas = document.createElement('canvas');
+            canvas.width = 512;
+            canvas.height = 512;
+            var ctx = canvas.getContext('2d');
+            ctx.beginPath();
+            ctx.arc(256, 256, 256, 0, Math.PI * 2);
+            ctx.fillStyle = '#FFD700'; 
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(256, 256, 230, 0, Math.PI * 2);
+            ctx.strokeStyle = '#DAA520'; 
+            ctx.lineWidth = 25;
+            ctx.stroke();
+            ctx.font = "320px serif";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            ctx.fillText("🐑", 256, 290);
+            ctx.font = "160px serif";
+            ctx.fillText("👑", 256, 110);
+            var iconUrl = canvas.toDataURL('image/png');
+            var link = document.createElement('link');
+            link.rel = 'icon';
+            link.href = iconUrl;
+            document.head.appendChild(link);
+            var appleLink = document.createElement('link');
+            appleLink.rel = 'apple-touch-icon';
+            appleLink.href = iconUrl;
+            document.head.appendChild(appleLink);
+        })();
+    </script>
+
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
       tailwind.config = {
@@ -52,7 +86,9 @@
         .filter-p2 { filter: sepia(0.5) hue-rotate(-30deg) saturate(1.2); } 
         .filter-p3 { filter: sepia(0.8) hue-rotate(350deg) saturate(1.5); } 
         .filter-p4 { filter: sepia(0.6) hue-rotate(20deg) saturate(1.8); } 
-        .filter-cpu { filter: grayscale(100%) brightness(10%); } 
+        
+        /* 使用 invert(100%) 反轉顏色，grayscale(100%) 去除雜色，確保黑公羊是黑色的 */
+        .filter-cpu { filter: grayscale(100%) invert(100%); } 
         
         .fade-in { animation: fadeIn 0.5s ease-out forwards; opacity: 0; }
         @keyframes fadeIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: scale(1); } }
@@ -426,7 +462,7 @@
             const [playerCount, setPlayerCount] = useState(1); 
             return (
             <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden"><BackgroundMap /><div className="z-10 max-w-md w-full bg-[#F3E5AB] p-8 rounded-xl shadow-[0_10px_30px_rgba(62,39,35,0.4)] border-4 border-[#8B4513] relative vintage-border"><div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#8B4513] text-[#F3E5AB] px-4 py-1 text-sm font-bold rounded shadow-md tracking-widest">BIBLE ADVENTURE</div><h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1><h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2>
-            <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(10%)'}}>🐏</div></div>
+            <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl" style={{filter: 'grayscale(100%) invert(100%)'}}>🐏</div></div>
             <div className="flex flex-col gap-3 mb-6">
                 <button onClick={()=>setPlayerCount(1)} className={`w-full py-3 rounded-lg font-bold border-2 transition-all flex items-center justify-center gap-2 ${playerCount===1 ? 'bg-[#8B4513] text-[#F3E5AB] border-[#8B4513] shadow-md' : 'bg-transparent text-[#8B4513] border-[#8B4513]/50 hover:bg-[#8B4513]/10'}`}>
                     <User size={20} className="inline"/> 單人挑戰 (VS 電腦)
@@ -904,7 +940,11 @@
                                      <div className="text-[9px] font-bold text-[#3E2723] leading-none text-center px-0.5 truncate w-full tracking-tight">{tile.name || tile.label}</div>
                                      <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-30 flex-wrap content-center gap-1">
                                          {playersHere.map((p, idx) => (
-                                             <div key={p.id} className={`text-xl drop-shadow-md transition-all duration-500 ${p.filter}`} style={{transform: `translate(${idx*2}px, ${idx*-2}px)`}}>{p.icon}</div>
+                                             <div key={p.id} className="transition-all duration-500" style={{transform: `translate(${idx*2}px, ${idx*-2}px)`}}>
+                                                 <div className="drop-shadow-md text-xl">
+                                                     <span className={p.filter}>{p.icon}</span>
+                                                 </div>
+                                             </div>
                                          ))}
                                      </div>
                                  </div>
