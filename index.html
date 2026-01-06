@@ -427,8 +427,34 @@
             return (
             <div className="min-h-screen flex flex-col items-center justify-center p-6 text-center relative overflow-hidden"><BackgroundMap /><div className="z-10 max-w-md w-full bg-[#F3E5AB] p-8 rounded-xl shadow-[0_10px_30px_rgba(62,39,35,0.4)] border-4 border-[#8B4513] relative vintage-border"><div className="absolute -top-4 left-1/2 -translate-x-1/2 bg-[#8B4513] text-[#F3E5AB] px-4 py-1 text-sm font-bold rounded shadow-md tracking-widest">BIBLE ADVENTURE</div><h1 className="text-4xl font-black text-[#3E2723] mb-2 font-serif">天國大富翁</h1><h2 className="text-lg font-bold text-[#5D4037] mb-8">- 應許之地篇 -</h2>
             <div className="flex justify-center items-center gap-8 mb-8"><div className="text-6xl">🐑</div><div className="text-2xl font-black">VS</div><div className="text-6xl grayscale opacity-80" style={{filter: 'grayscale(100%) brightness(10%)'}}>🐏</div></div>
-            <div className="flex justify-center gap-2 mb-6"><button onClick={()=>setPlayerCount(1)} className={`px-4 py-2 rounded-lg font-bold border-2 transition-all ${playerCount===1 ? 'bg-[#8B4513] text-[#F3E5AB] border-[#8B4513]' : 'bg-transparent text-[#8B4513] border-[#8B4513]/50'}`}><User size={20} className="inline"/> 單人挑戰</button><button onClick={()=>setPlayerCount(2)} className={`px-4 py-2 rounded-lg font-bold border-2 transition-all ${playerCount>1 ? 'bg-[#8B4513] text-[#F3E5AB] border-[#8B4513]' : 'bg-transparent text-[#8B4513] border-[#8B4513]/50'}`}><Users size={20} className="inline"/> 多人同樂</button></div>
-            {playerCount > 1 && (<div className="flex justify-center items-center gap-4 mb-6 text-[#3E2723]"><span className="font-bold">玩家人數:</span><button onClick={()=>setPlayerCount(2)} className={`w-8 h-8 rounded-full border-2 ${playerCount===2?'bg-[#8B4513] text-white':'bg-white'}`}>2</button><button onClick={()=>setPlayerCount(3)} className={`w-8 h-8 rounded-full border-2 ${playerCount===3?'bg-[#8B4513] text-white':'bg-white'}`}>3</button><button onClick={()=>setPlayerCount(4)} className={`w-8 h-8 rounded-full border-2 ${playerCount===4?'bg-[#8B4513] text-white':'bg-white'}`}>4</button></div>)}
+            <div className="flex flex-col gap-3 mb-6">
+                <button onClick={()=>setPlayerCount(1)} className={`w-full py-3 rounded-lg font-bold border-2 transition-all flex items-center justify-center gap-2 ${playerCount===1 ? 'bg-[#8B4513] text-[#F3E5AB] border-[#8B4513] shadow-md' : 'bg-transparent text-[#8B4513] border-[#8B4513]/50 hover:bg-[#8B4513]/10'}`}>
+                    <User size={20} className="inline"/> 單人挑戰 (VS 電腦)
+                </button>
+                <button onClick={()=>setPlayerCount(2)} className={`w-full py-3 rounded-lg font-bold border-2 transition-all flex items-center justify-center gap-2 ${playerCount>1 ? 'bg-[#8B4513] text-[#F3E5AB] border-[#8B4513] shadow-md' : 'bg-transparent text-[#8B4513] border-[#8B4513]/50 hover:bg-[#8B4513]/10'}`}>
+                    <Users size={20} className="inline"/> 多人同樂 (本機輪流)
+                </button>
+            </div>
+            {playerCount > 1 && (
+                <div className="bg-[#E6D5B8] p-4 rounded-lg border border-[#8B4513]/30 shadow-inner mb-6 animate-in slide-in-from-top-4 duration-300">
+                    <p className="text-xs text-[#8B4513] mb-3 font-bold text-center bg-white/50 py-1 rounded-full flex items-center justify-center gap-1"><Pointer size={12}/> 請輪流傳遞裝置進行遊戲 (Hotseat)</p>
+                    <div className="flex flex-col items-center gap-2">
+                        <span className="font-bold text-[#3E2723] text-sm">選擇遊玩人數:</span>
+                        <div className="flex justify-center items-center gap-4">
+                            {[2, 3, 4].map(num => (
+                                <button key={num} onClick={()=>setPlayerCount(num)} className={`w-12 h-12 rounded-full border-2 flex items-center justify-center font-black text-lg transition-all ${playerCount===num?'bg-[#8B4513] text-white scale-110 shadow-lg border-[#3E2723]':'bg-white text-[#8B4513] border-[#8B4513]/30 hover:border-[#8B4513]'}`}>
+                                    {num}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="mt-2 text-xs font-bold text-[#5D4037] flex gap-2">
+                             {Array.from({length: playerCount}).map((_, i) => (
+                                 <span key={i} className={`px-2 py-1 rounded bg-white/50 border border-[#8B4513]/20`}>{PLAYER_CONFIGS[i].icon}</span>
+                             ))}
+                        </div>
+                    </div>
+                </div>
+            )}
             <div className="text-left mb-6 space-y-3 bg-[#E6D5B8] p-4 rounded border border-[#8B4513]/30 shadow-inner"><h3 className="font-bold text-[#8B4513] mb-3 flex items-center gap-2 border-b border-[#8B4513]/20 pb-2"><Info size={18} /> 遊戲規則</h3><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">1</div><p className="text-sm font-bold text-[#3E2723]">擲骰子，累積信心 ({WIN_CONDITION_FAITH})。</p></div><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">2</div><p className="text-sm font-bold text-[#3E2723]">攻佔 {WIN_CONDITION_CITIES} 座城池，或建立 {WIN_CONDITION_ALTARS} 座祭壇。</p></div><div className="flex items-start gap-3"><div className="bg-[#8B4513] text-[#F3E5AB] w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold shrink-0">3</div><p className="text-sm font-bold text-[#3E2723]">小心破產 (信心 &lt; 0)。</p></div></div><button onClick={()=>onStart(playerCount)} className="w-full bg-[#8B4513] hover:bg-[#5D4037] text-[#F3E5AB] text-xl font-black py-4 rounded shadow-md border-2 border-[#3E2723]"><Sword size={24} className="inline mr-2"/> {playerCount===1?'開始挑戰':'開始遊戲'}</button><div className="mt-8 pt-6 border-t border-[#8B4513]/30"><p className="text-[#3E2723] font-bold mb-4">耶穌加油站 x 微光新事</p><div className="flex justify-center gap-4"><a href="https://www.facebook.com/profile.php?id=100068500932557" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Facebook size={24} /></a><a href="https://www.instagram.com/forever.believe.in.jesus/" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Instagram size={24} /></a><a href="https://www.threads.net/@forever.believe.in.jesus" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><AtSign size={24} /></a><a href="https://line.me/R/ti/p/@469cjlho" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><MessageCircle size={24} /></a><a href="mailto:newthingsinthelittlelight@gmail.com" target="_blank" className="text-[#3E2723] hover:text-[#8B4513] transition-colors"><Mail size={24} /></a></div></div></div></div>);
         };
 
@@ -652,22 +678,22 @@
                           notify(`${player.name} 攻佔了 ${tile.name}`, "bg-purple-500");
                       } else delayNext();
                   } else if (tile.owner === pId) {
-                       if (player.faith >= (tile.price * 0.6 + 800) && Math.random() > 0.3) {
+                        if (player.faith >= (tile.price * 0.6 + 800) && Math.random() > 0.3) {
                            updateBoardAndFaith(pId, -Math.floor(tile.price*0.6), 'upgrade', null, tile.id);
                            notify(`${player.name} 獻祭了 ${tile.name}`, "bg-purple-600");
-                       } else delayNext();
+                        } else delayNext();
                   } else {
-                       const rent = tile.rent * (tile.level + 1);
-                       const destroy = tile.price;
-                       // CPU Logic: Destroy logic updated for tiered destruction
-                       if (player.faith >= (destroy + 800) && Math.random() < 0.4) {
+                        const rent = tile.rent * (tile.level + 1);
+                        const destroy = tile.price;
+                        // CPU Logic: Destroy logic updated for tiered destruction
+                        if (player.faith >= (destroy + 800) && Math.random() < 0.4) {
                            updateBoardAndFaith(pId, -destroy, 'destroy', null, tile.id);
                            // Notify text based on level before destruction (approx)
                            notify(`${player.name} 進行了破壞！`, "bg-red-600");
-                       } else {
+                        } else {
                            updateBoardAndFaith(pId, -rent, 'rent', tile.owner, tile.id);
                            notify(`${player.name} 支付了奉獻金`, "bg-green-600");
-                       }
+                        }
                   }
               } else if (tile.type === 'fate' || tile.type === 'chance') {
                   const effect = Math.random() > 0.5 ? 50 : -30;
@@ -725,7 +751,7 @@
                   } else if (action === 'upgrade') {
                       notify("獻祭完成！祭壇升級", "bg-amber-500");
                   } else if (action === 'buy') {
-                       notify("成功攻佔此地！", "bg-indigo-500");
+                        notify("成功攻佔此地！", "bg-indigo-500");
                   }
                   
                   newBoard[targetIndex] = tile;
@@ -785,12 +811,12 @@
                                const altars = board.filter(t => t.owner === p.id && t.level > 0).length;
                                return (
                                    <div className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${0 === currentTurn ? `${p.bg} ${p.border} scale-105 shadow-md` : 'border-transparent opacity-80 scale-95'} min-w-[80px]`}>
-                                       <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
-                                       <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
-                                       <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
-                                           <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
-                                           <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
-                                       </div>
+                                           <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
+                                           <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
+                                           <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
+                                               <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
+                                               <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
+                                           </div>
                                    </div>
                                );
                            })()}
@@ -805,12 +831,12 @@
                                const altars = board.filter(t => t.owner === p.id && t.level > 0).length;
                                return (
                                    <div key={p.id} className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${realIdx === currentTurn ? `${p.bg} ${p.border} scale-105 shadow-md` : 'border-transparent opacity-80 scale-95'} min-w-[80px]`}>
-                                       <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
-                                       <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
-                                       <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
-                                           <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
-                                           <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
-                                       </div>
+                                           <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
+                                           <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
+                                           <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
+                                               <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
+                                               <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
+                                           </div>
                                    </div>
                                );
                            })}
@@ -835,7 +861,7 @@
                                      <div className="scale-75"><Dice3D value={diceValue} rolling={isMoving}/></div>
                                  </div>
                                  <button onClick={rollDice} disabled={inputDisabled || currentPlayer?.isCPU || isMoving || activeModal} className={`w-36 py-3 rounded-xl font-black text-[#F3E5AB] shadow-[0_4px_0_#3E2723] text-sm flex items-center justify-center gap-2 transition-all active:translate-y-1 active:shadow-none border-2 border-[#3E2723] ${currentPlayer?.isCPU ? 'bg-gray-400' : currentPlayer?.isFrozen ? 'bg-red-600' : 'bg-[#8B4513] hover:bg-[#6D4C41]'}`}>
-                                     {currentPlayer?.isCPU ? "電腦思考中..." : currentPlayer?.isFrozen ? <><Lock size={16}/> 跳過</> : "擲骰子"}
+                                     {currentPlayer?.isCPU ? "電腦思考中..." : currentPlayer?.isFrozen ? <><Lock size={16}/> 跳過</> : `輪到${currentPlayer?.name}`}
                                  </button>
                                  <div className={`mt-2 px-3 py-1 rounded-full text-xs font-bold ${currentPlayer?.bg} ${currentPlayer?.color} border border-current shadow-sm`}>
                                      {currentPlayer?.name} {currentPlayer?.isCPU ? '(電腦)' : '(你)'} 的回合
