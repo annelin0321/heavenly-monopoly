@@ -69,9 +69,7 @@
         // ==========================================
         // 0. CONFIGURATION
         // ==========================================
-        // ↓↓↓ 請在這裡更換您的地圖圖片連結 ↓↓↓
         const MAP_IMAGE_URL = "https://images.unsplash.com/photo-1524661135-423995f22d0b?ixlib=rb-4.0.3&auto=format&fit=crop&w=1974&q=80";
-        // ==========================================
 
         // ==========================================
         // 1. DATA & CONSTANTS
@@ -348,7 +346,7 @@
             return (
                 <div className="bg-[#FFF8E7] p-8 rounded-3xl border-4 border-[#D7CCC8] text-center relative fade-in">
                     <h3 className="text-2xl font-black text-[#5D4037] mb-2">🏰 {tileData.name} ({title})</h3>
-                    {tileData.ref && <p className="text-xs text-[#8B4513] mb-4 bg-[#F3E5AB]/50 px-2 py-1 rounded inline-block text-left w-full border border-[#8B4513]/20">{tileData.ref}</p>}
+                    {tileData.ref && <p className="text-xs text-[#8B4513] mb-4 bg-[#F3E5AB]/50 px-2 py-1 rounded inline-block text-left w-full border border-[#8B4513]/20 leading-relaxed">{tileData.ref}</p>}
                     <PropertyAction />
                 </div>
             );
@@ -718,10 +716,16 @@
                       // Tiered destruction logic
                       if (tile.level > 0) {
                           tile.level -= 1;
+                          notify("祭壇受損！等級下降", "bg-red-600");
                       } else {
                           tile.owner = null; 
                           tile.level = 0; 
+                          notify("營壘已被拆毀！", "bg-red-600");
                       }
+                  } else if (action === 'upgrade') {
+                      notify("獻祭完成！祭壇升級", "bg-amber-500");
+                  } else if (action === 'buy') {
+                       notify("成功攻佔此地！", "bg-indigo-500");
                   }
                   
                   newBoard[targetIndex] = tile;
@@ -773,25 +777,40 @@
                <BackgroundMap />
                
                <div className="w-full max-w-md fixed top-4 z-30 px-2">
-                   <div className="glass-panel rounded-xl p-2 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md flex justify-between items-center relative h-[70px]">
+                   <div className="glass-panel rounded-xl p-2 shadow-floating border border-[#8B4513]/40 bg-[#FFF8E7]/90 backdrop-blur-md flex justify-between items-center relative h-auto min-h-[100px] py-2">
                        <div className="flex-1 flex justify-start pl-1">
-                           {players[0] && (
-                               <div className={`flex flex-col items-center p-1 rounded-lg border-2 transition-all ${0 === currentTurn ? `${players[0].bg} ${players[0].border} scale-110 shadow-md` : 'border-transparent opacity-60 scale-90'}`}>
-                                   <div className={`text-2xl ${players[0].filter || ''}`}>{players[0].icon}</div>
-                                   <span className={`text-xs font-bold ${players[0].color}`}>{players[0].faith}</span>
-                               </div>
-                           )}
+                           {players[0] && (() => {
+                               const p = players[0];
+                               const cities = board.filter(t => t.owner === p.id && t.level === 0).length;
+                               const altars = board.filter(t => t.owner === p.id && t.level > 0).length;
+                               return (
+                                   <div className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${0 === currentTurn ? `${p.bg} ${p.border} scale-105 shadow-md` : 'border-transparent opacity-80 scale-95'} min-w-[80px]`}>
+                                       <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
+                                       <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
+                                       <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
+                                           <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
+                                           <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
+                                       </div>
+                                   </div>
+                               );
+                           })()}
                        </div>
 
-                       <span className="font-black text-[#5D4037] text-xl font-serif absolute left-1/2 -translate-x-1/2">CANAAN</span>
+                       <span className="font-black text-[#5D4037] text-xl font-serif absolute left-1/2 -translate-x-1/2 -mt-4">CANAAN</span>
 
                        <div className="flex-1 flex justify-end pr-1 gap-1">
                            {players.slice(1).map((p, i) => {
                                const realIdx = i + 1;
+                               const cities = board.filter(t => t.owner === p.id && t.level === 0).length;
+                               const altars = board.filter(t => t.owner === p.id && t.level > 0).length;
                                return (
-                                   <div key={p.id} className={`flex flex-col items-center p-1 rounded-lg border-2 transition-all ${realIdx === currentTurn ? `${p.bg} ${p.border} scale-110 shadow-md` : 'border-transparent opacity-60 scale-90'}`}>
-                                       <div className={`text-2xl ${p.filter || ''}`}>{p.icon}</div>
-                                       <span className={`text-xs font-bold ${p.color}`}>{p.faith}</span>
+                                   <div key={p.id} className={`flex flex-col items-center p-2 rounded-xl border-2 transition-all ${realIdx === currentTurn ? `${p.bg} ${p.border} scale-105 shadow-md` : 'border-transparent opacity-80 scale-95'} min-w-[80px]`}>
+                                       <div className={`text-3xl mb-1 ${p.filter || ''}`}>{p.icon}</div>
+                                       <span className={`text-sm font-black ${p.color} mb-1`}>{p.faith}</span>
+                                       <div className="flex gap-2 text-[10px] font-bold text-[#5D4037]">
+                                           <div className="flex items-center"><Castle size={10} className="mr-0.5"/>{cities}</div>
+                                           <div className="flex items-center"><Flame size={10} className="mr-0.5 text-orange-500"/>{altars}</div>
+                                       </div>
                                    </div>
                                );
                            })}
